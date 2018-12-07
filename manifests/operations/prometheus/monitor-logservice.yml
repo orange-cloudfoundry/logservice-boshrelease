@@ -37,6 +37,10 @@
   value:
     name: logservice_alerts
     release: logservice
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/rule_files/-
+  value:
+    /var/vcap/jobs/logservice_alerts/*.alerts.yml
 
 - type: replace
   path: /releases/-
