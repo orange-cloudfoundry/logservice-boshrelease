@@ -1,0 +1,8 @@
+---
+name: logservice
+
+dependencies:
+  - golang-1.10-linux
+
+files:
+  - logs-service-broker/**

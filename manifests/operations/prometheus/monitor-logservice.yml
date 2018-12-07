@@ -1,0 +1,45 @@
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/scrape_configs/-
+  value:
+    job_name: logservice
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true
+    file_sd_configs:
+      - files:
+          - /var/vcap/store/bosh_exporter/bosh_target_groups.json
+    relabel_configs:
+      - action: keep
+        regex: logservice
+        source_labels:
+          - __meta_bosh_job_process_name
+      - regex: (.*)
+        replacement: ${1}:8089
+        source_labels:
+          - __address__
+        target_label: __address__
+
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=grafana/properties/grafana/prometheus/dashboard_folders/name=Logservice?
+  value:
+    name: Logservice
+    files:
+      - /var/vcap/jobs/logservice_dashboards/*.json
+
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=logservice_dashboards?
+  value:
+    name: logservice_dashboards
+    release: logservice
+
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=logservice_alerts?
+  value:
+    name: logservice_alerts
+    release: logservice
+
+- type: replace
+  path: /releases/-
+  value:
+    name: logservice
+    version: latest

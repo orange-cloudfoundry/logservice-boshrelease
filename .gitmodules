@@ -1,0 +1,3 @@
+[submodule "src/logs-service-broker"]
+	path = src/logs-service-broker
+	url = https://github.com/orange-cloudfoundry/logs-service-broker.git

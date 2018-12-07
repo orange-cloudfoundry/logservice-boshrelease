@@ -1,0 +1,77 @@
+---
+name: logservice
+
+instance_groups:
+  - name: logservice
+    azs: [z1,z2,z3]
+    instances: 3
+    jobs:
+      - name: bpm
+        release: bpm
+      - name: logservice
+        release: logservice
+        properties:
+          logservice:
+            syslog_addresses:
+              - id: cada65a0-c972-4ccf-8eb2-bc58b0d147cb
+                name: loghost
+                company_id: tags@1368
+                description: Drain apps logs to loghost
+                bullets:
+                  - "Available create parameters:"
+                  - "- s"
+                  - "- env"
+                  - "- audience"
+                urls:
+                  - tcp://loghost.example.net:1512
+                tags:
+                  s: "{{.Space}}"
+                  env: "{{if hasSuffix .Org \"-prod\" }}prod{{ else }}dev{{ end }}"
+                  audience: "mycompagny"
+                  fmt: "json"
+            ssl_cert: ((log_service_ssl.certificate))
+            ssl_key: ((log_service_ssl.private_key))
+            broker:
+              username: logservice-broker
+              password: ((logservice-broker-password))
+            syslog_drain_url: https://url-to-logservice.example.net:8089
+            skip_ssl_validation: false
+            mysql:
+              user: logservice
+              password: ((logservice-mysql-password))
+              host: ((logservice-mysql-host))
+              database: logservice
+    vm_type: default
+    stemcell: default
+    networks:
+      - name: default
+
+variables:
+  - name: logservice-broker-password
+    type: password
+  - name: log_service_ssl
+    options:
+      alternative_names:
+        - url-to-logservice.example.net
+      common_name: logserviceSSL
+    type: certificate
+
+update:
+  canaries: 1
+  max_in_flight: 32
+  canary_watch_time: 1000-100000
+  update_watch_time: 1000-100000
+  serial: false
+
+stemcells:
+  - alias: default
+    os: ubuntu-xenial
+    version: latest
+
+releases:
+- name: logservice
+  version: "1.0.0"
+  url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.0.0/logservice-1.0.0.tgz
+  sha1: ae7df9aa17cfcdbc61fcd1b92669550ab8e08b26
+- name: bpm
+  version: latest

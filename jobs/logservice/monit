@@ -1,0 +1,5 @@
+check process logservice
+  with pidfile   /var/vcap/sys/run/bpm/logservice/logservice.pid
+  start program "/var/vcap/jobs/bpm/bin/bpm start logservice"
+  stop program  "/var/vcap/jobs/bpm/bin/bpm stop  logservice"
+  group vcap

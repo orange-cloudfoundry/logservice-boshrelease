@@ -1,0 +1,56 @@
+---
+name: logservice
+
+templates:
+  bpm.yml: config/bpm.yml
+  config.yml.erb: config/config.yml
+  ssl_cert.pem.erb: config/ssl_cert.pem
+  ssl_key.pem.erb: config/ssl_key.pem
+
+packages:
+  - logservice
+
+properties:
+  logservice.syslog_addresses:
+    description: ""
+  logservice.broker.username:
+    description: ""
+  logservice.broker.password:
+    description: ""
+  logservice.syslog_drain_url:
+    description: "Url to pass to applications as syslog_drain_url"
+  logservice.skip_ssl_validation:
+    description: ""
+    default: false
+  logservice.mysql.user:
+    description: ""
+  logservice.mysql.password:
+    description: ""
+  logservice.mysql.host:
+    description: ""
+    default: "database.service.cf.internal"
+  logservice.mysql.database:
+    description: ""
+  logservice.mysql.port:
+    description: ""
+    default: 3306
+  logservice.mysql.options:
+    description: ""
+    default: ""
+  logservice.mysql.cnx.max_open:
+    description: ""
+    default: "100"
+  logservice.mysql.cnx.max_idle:
+    description: ""
+    default: "100"
+  logservice.mysql.cnx.max_life:
+    description: ""
+    default: "1h"
+  logservice.log_level:
+    description: ""
+    default: "info"
+  logservice.ssl_cert:
+    description: ""
+  logservice.ssl_key:
+    description: ""
+

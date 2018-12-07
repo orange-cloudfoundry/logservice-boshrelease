@@ -1,0 +1,11 @@
+- type: replace
+  path: /instance_groups/name=logservice/jobs/name=logservice/properties/logservice/syslog_drain_url
+  value: https://logservice.service.cf.internal:8089
+
+- type: replace
+  path: /variables/name=log_service_ssl/options/alternative_names/0
+  value: logservice.service.cf.internal
+
+- type: replace
+  path: /variables/name=log_service_ssl/options/ca?
+  value: /((director_name))/cf/logservice-ca

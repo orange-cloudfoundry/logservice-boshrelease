@@ -1,0 +1,9 @@
+---
+name: logservice_dashboards
+
+packages: []
+
+templates:
+  logservice_overview.json: logservice_overview.json
+
+properties: {}

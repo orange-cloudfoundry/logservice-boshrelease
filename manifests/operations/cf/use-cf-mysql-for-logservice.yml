@@ -1,0 +1,12 @@
+- type: replace
+  path: /instance_groups/name=database/jobs/name=pxc-mysql/properties/seeded_databases/-
+  value:
+    name: logservice
+    username: logservice
+    password: ((logservice-mysql-password))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: logservice-mysql-password
+    type: password

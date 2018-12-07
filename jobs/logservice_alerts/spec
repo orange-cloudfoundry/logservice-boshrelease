@@ -1,0 +1,22 @@
+---
+name: logservice_alerts
+
+packages: []
+
+templates:
+  logservice.alerts.yml: logservice.alerts.yml
+
+properties:
+  logservice_alerts.duration.threshold_ms:
+    description: "Average forward duration too high threshold (ms)"
+    default: 100
+  logservice_alerts.duration.evaluation_time:
+    description: "Average forward duration too high evaluation time"
+    default: 15m
+
+  logservice_alerts.error.threshold:
+    description: "Forward drop rate too high threshold"
+    default: 0
+  logservice_alerts.errors.evaluation_time:
+    description: "Forward drop rate too high evaluation time"
+    default: 15m

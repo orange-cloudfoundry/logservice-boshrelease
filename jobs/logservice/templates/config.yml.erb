@@ -1,0 +1,31 @@
+services:
+  - name: my-config
+    tags: [ "config" ]
+    credentials:
+      syslog_addresses: <%= p('logservice.syslog_addresses').to_json %>
+      broker_username: "<%= p('logservice.broker.username') %>"
+      broker_password: "<%= p('logservice.broker.password') %>"
+      syslog_drain_url: "<%= p('logservice.syslog_drain_url') %>"
+      skip_ssl_validation: <%= p('logservice.skip_ssl_validation').to_json %>
+      log_level: "<%= p('logservice.log_level') %>"
+      log_no_color: true
+      log_json: true
+      virtual_host: false
+      sql_cnx_max_open: <%= p('logservice.mysql.cnx.max_open') %>
+      sql_cnx_max_idle: <%= p('logservice.mysql.cnx.max_idle') %>
+      sql_cnx_max_life: <%= p('logservice.mysql.cnx.max_life') %>
+<% if_p('logservice.ssl_cert') do %>
+<% if_p('logservice.ssl_key') do %>
+      ssl_cert_file: /var/vcap/jobs/logservice/config/ssl_cert.pem
+      ssl_key_file:  /var/vcap/jobs/logservice/config/ssl_key.pem
+<% end %>
+<% end %>
+  - name: mysql
+    credentials:
+      user: "<%= p('logservice.mysql.user') %>"
+      password: "<%= p('logservice.mysql.password') %>"
+      host: "<%= p('logservice.mysql.host') %>"
+      port: "<%= p('logservice.mysql.port') %>"
+      database: "<%= p('logservice.mysql.database') %>"
+      options: "<%= p('logservice.mysql.options') %>"
+
