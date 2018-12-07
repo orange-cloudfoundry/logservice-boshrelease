@@ -60,11 +60,11 @@
       }
     ]
   },
-  "editable": true,
+  "editable": false,
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1544178544992,
+  "iteration": 1544193702097,
   "links": [],
   "panels": [
     {
@@ -505,42 +505,42 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(logs_sent_duration_bucket{le=\"0.005\", instance=~\"$instance\"}  / on(instance) group_left logs_sent_duration_count{instance=~\"$instance\"}) * 100",
+          "expr": "(sum(logs_sent_duration_bucket{le=\"0.005\", instance=~\".*\"}) by (instance,le)  / on(instance) group_left sum(logs_sent_duration_count{instance=~\"$instance\"}) by (instance,le)) * 100",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "5 ms / {{instance}}",
           "refId": "A"
         },
         {
-          "expr": "(logs_sent_duration_bucket{le=\"0.01\", instance=~\"$instance\"}  / on(instance) group_left logs_sent_duration_count{instance=~\"$instance\"}) * 100",
+          "expr": "(sum(logs_sent_duration_bucket{le=\"0.010\", instance=~\"$instance\"}) by (instance,le)  / on(instance) group_left sum(logs_sent_duration_count{instance=~\"$instance\"}) by (instance,le)) * 100",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "10 ms / {{instance}}",
           "refId": "B"
         },
         {
-          "expr": "(logs_sent_duration_bucket{le=\"0.1\", instance=~\"$instance\"}  / on(instance) group_left logs_sent_duration_count{instance=~\"$instance\"}) * 100",
+          "expr": "(sum(logs_sent_duration_bucket{le=\"0.1\", instance=~\"$instance\"}) by (instance,le)  / on(instance) group_left sum(logs_sent_duration_count{instance=~\"$instance\"}) by (instance,le)) * 100",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "100 ms / {{instance}}",
           "refId": "C"
         },
         {
-          "expr": "(logs_sent_duration_bucket{le=\"0.25\", instance=~\"$instance\"}  / on(instance) group_left logs_sent_duration_count{instance=~\"$instance\"}) * 100",
+          "expr": "(sum(logs_sent_duration_bucket{le=\"0.25\", instance=~\"$instance\"}) by (instance,le)  / on(instance) group_left sum(logs_sent_duration_count{instance=~\"$instance\"}) by (instance,le)) * 100",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "250 ms / {{instance}}",
           "refId": "D"
         },
         {
-          "expr": "(logs_sent_duration_bucket{le=\"0.5\", instance=~\"$instance\"}  / on(instance) group_left logs_sent_duration_count{instance=~\"$instance\"}) * 100",
+          "expr": "(sum(logs_sent_duration_bucket{le=\"0.5\", instance=~\"$instance\"}) by (instance,le)  / on(instance) group_left sum(logs_sent_duration_count{instance=~\"$instance\"}) by (instance,le)) * 100",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "500ms  / {{instance}}",
           "refId": "E"
         },
         {
-          "expr": "(logs_sent_duration_bucket{le=\"1\", instance=~\"$instance\"}  / on(instance) group_left logs_sent_duration_count{instance=~\"$instance\"}) * 100",
+          "expr": "(sum(logs_sent_duration_bucket{le=\"1\", instance=~\"$instance\"}) by (instance,le)  / on(instance) group_left sum(logs_sent_duration_count{instance=~\"$instance\"}) by (instance,le)) * 100",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "1000 ms  / {{instance}}",
@@ -654,7 +654,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 38
+        "y": 33
       },
       "id": 12,
       "panels": [],
@@ -676,7 +676,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 39
+        "y": 34
       },
       "id": 5,
       "interval": null,
@@ -721,7 +721,7 @@
         "h": 9,
         "w": 8,
         "x": 8,
-        "y": 39
+        "y": 34
       },
       "id": 6,
       "interval": null,
@@ -766,7 +766,7 @@
         "h": 9,
         "w": 8,
         "x": 16,
-        "y": 39
+        "y": 34
       },
       "id": 7,
       "interval": null,
@@ -811,7 +811,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 48
+        "y": 43
       },
       "id": 28,
       "interval": null,
@@ -901,6 +901,6 @@
   },
   "timezone": "",
   "title": "Overview",
-  "uid": "D1xqFiEis",
-  "version": 14
+  "uid": "Dq4MdSPiz",
+  "version": 2
 }
