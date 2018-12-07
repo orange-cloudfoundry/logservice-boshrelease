@@ -1,0 +1,29 @@
+name: logservice
+version: "1.3"
+commit_hash: 6108fbf
+uncommitted_changes: false
+jobs:
+- name: logservice
+  version: 4cce27d4699b5d9622f2a7a87c25bdcefe36e6e0
+  fingerprint: 4cce27d4699b5d9622f2a7a87c25bdcefe36e6e0
+  sha1: dc96b0e9b559e0c8844cc0d8624ffb71488aab1c
+- name: logservice_alerts
+  version: ca69034d4c2eccd12966bbaa89f79ac357b9bca2
+  fingerprint: ca69034d4c2eccd12966bbaa89f79ac357b9bca2
+  sha1: 6cffb267b549dcbcd9a94428e5f9e3ebe9994599
+- name: logservice_dashboards
+  version: a14349b8075d2c018bc9f4697ac9862abef8610c
+  fingerprint: a14349b8075d2c018bc9f4697ac9862abef8610c
+  sha1: 3096e11e4f67c736620e41b2d7a8009737566ca7
+packages:
+- name: golang-1.10-linux
+  version: 84480dd6f6ab2d61546f28c05ed2705c9c642607
+  fingerprint: 84480dd6f6ab2d61546f28c05ed2705c9c642607
+  sha1: 491bd2416037957858a1e0450193f116285a6be7
+  dependencies: []
+- name: logservice
+  version: 1a3e045198ac8cbf4985e5c35a75baa4c0cb3a3f
+  fingerprint: 1a3e045198ac8cbf4985e5c35a75baa4c0cb3a3f
+  sha1: d00e9a99669ea75df0d90b108ba52e49d3f7decc
+  dependencies:
+  - golang-1.10-linux
