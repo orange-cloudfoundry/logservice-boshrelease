@@ -9,3 +9,11 @@
 - type: replace
   path: /variables/name=log_service_ssl/options/ca?
   value: /((director_name))/cf/logservice-ca
+
+- type: replace
+  path: /instance_groups/name=broker-registrar/jobs/name=broker-registrar/properties/logservice/broker/host
+  value: logservice.service.cf.internal
+
+- type: replace
+  path: /instance_groups/name=broker-registrar/jobs/name=broker-registrar/properties/cf/username
+  value: /((director_name))/cf/cf_admin_password

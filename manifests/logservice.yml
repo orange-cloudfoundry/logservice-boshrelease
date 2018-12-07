@@ -46,6 +46,34 @@ instance_groups:
     networks:
       - name: default
 
+  - name: broker-registrar
+    azs: [z1]
+    instances: 1
+    jobs:
+    - name: broker-registrar
+      properties:
+        cf:
+          api: https://api.((system_domain))
+          username: admin
+          password: ((cf_admin_password))
+        logservice:
+          broker:
+            host: url-to-logservice.example.net
+            protocol: https
+            port: 8089
+            name: logservice
+            username: logservice-broker
+            password: ((logservice-broker-password))
+            public_plans: [loghost]
+      release: logservice
+    lifecycle: errand
+    networks:
+    - name: default
+    stemcell: default
+    update:
+      serial: false
+    vm_type: minimal
+
 variables:
   - name: logservice-broker-password
     type: password
@@ -75,3 +103,5 @@ releases:
   sha1: ae7df9aa17cfcdbc61fcd1b92669550ab8e08b26
 - name: bpm
   version: latest
+
+  
