@@ -33,7 +33,7 @@
     release: logservice
 
 - type: replace
-  path: /instance_groups/name=grafana/jobs/name=logservice_alerts?
+  path: /instance_groups/name=prometheus2/jobs/name=logservice_alerts?
   value:
     name: logservice_alerts
     release: logservice
