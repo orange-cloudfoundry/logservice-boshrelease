@@ -11,9 +11,9 @@
   value: /((director_name))/cf/logservice-ca
 
 - type: replace
-  path: /instance_groups/name=broker-registrar/jobs/name=broker-registrar/properties/logservice/broker/host
+  path: /instance_groups/name=logservice/jobs/name=broker-registrar/properties/logservice/broker/host
   value: logservice.service.cf.internal
 
 - type: replace
-  path: /instance_groups/name=broker-registrar/jobs/name=broker-registrar/properties/cf/username
-  value: /((director_name))/cf/cf_admin_password
+  path: /instance_groups/name=logservice/jobs/name=broker-registrar/properties/cf/password
+  value: ((/((director_name))/cf/cf_admin_password))

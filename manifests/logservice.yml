@@ -8,6 +8,23 @@ instance_groups:
     jobs:
       - name: bpm
         release: bpm
+      - name: broker-registrar
+        release: logservice
+        properties:
+          cf:
+            api_url: https://api.((system_domain))
+            username: admin
+            password: ((cf_admin_password))
+            skip_ssl_validation: true
+          logservice:
+            broker:
+              host: url-to-logservice.example.net
+              protocol: https
+              port: 8089
+              name: logs
+              username: logservice-broker
+              password: ((logservice-broker-password))
+              public_plans: [loghost]
       - name: logservice
         release: logservice
         properties:
@@ -46,34 +63,6 @@ instance_groups:
     networks:
       - name: default
 
-  - name: broker-registrar
-    azs: [z1]
-    instances: 1
-    jobs:
-    - name: broker-registrar
-      properties:
-        cf:
-          api: https://api.((system_domain))
-          username: admin
-          password: ((cf_admin_password))
-        logservice:
-          broker:
-            host: url-to-logservice.example.net
-            protocol: https
-            port: 8089
-            name: logservice
-            username: logservice-broker
-            password: ((logservice-broker-password))
-            public_plans: [loghost]
-      release: logservice
-    lifecycle: errand
-    networks:
-    - name: default
-    stemcell: default
-    update:
-      serial: false
-    vm_type: minimal
-
 variables:
   - name: logservice-broker-password
     type: password
@@ -98,10 +87,8 @@ stemcells:
 
 releases:
 - name: logservice
-  version: "1.0.0"
-  url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.0.0/logservice-1.0.0.tgz
-  sha1: ae7df9aa17cfcdbc61fcd1b92669550ab8e08b26
+  version: "1.4"
+  url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.4/logservice-1.4.tgz
+  sha1: 9ea161178f7693057ad7bfecd4c5d8269118410c
 - name: bpm
   version: latest
-
-  
