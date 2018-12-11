@@ -85,10 +85,12 @@ stemcells:
     os: ubuntu-xenial
     version: latest
 
+manifest_version: v1.5
+
 releases:
 - name: logservice
-  version: "1.4"
-  url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.4/logservice-1.4.tgz
-  sha1: 9ea161178f7693057ad7bfecd4c5d8269118410c
+  version: "1.5"
+  url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.4/logservice-1.5.tgz
+  sha1: ca8f23c0aeeb4237cea3cfc39f2dbe21de0837aa
 - name: bpm
   version: latest
