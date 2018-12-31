@@ -19,7 +19,7 @@
     type: certificate
 
 - type: replace
-  path: /instance_groups/name=adapter/jobs/name=ca_certs/release
+  path: /instance_groups/name=adapter/jobs/name=ca_certs?/release
   value: os-conf
 
 - type: replace
