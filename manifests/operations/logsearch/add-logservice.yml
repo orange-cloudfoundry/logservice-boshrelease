@@ -1,0 +1,44 @@
+# ops-file for https://github.com/cloudfoundry-community/logsearch-boshrelease
+---
+- type: replace
+  path: /instance_groups/name=maintenance/jobs/name=elasticsearch_config/properties/elasticsearch_config/templates/-
+  value:
+    index-mappings-logservice: /var/vcap/jobs/logservice-logsearch-filters/index-mappings.json
+
+- type: replace
+  path: /instance_groups/name=maintenance/jobs/name=elasticsearch_config/properties/elasticsearch_config/templates/-
+  value:
+    index-mappings-app-logservice: /var/vcap/jobs/logservice-logsearch-filters/index-mappings-app.json
+
+- type: replace
+  path: /instance_groups/name=maintenance/jobs/name=elasticsearch_config/properties/elasticsearch_config/templates/-
+  value:
+    index-mappings-platform-logservice: /var/vcap/jobs/logservice-logsearch-filters/index-mappings-platform.json
+
+- type: replace
+  path: /instance_groups/name=maintenance/jobs/-
+  value:
+    name: logservice-logsearch-filters
+    release: logservice
+
+- type: replace
+  path: /instance_groups/name=ingestor/jobs/-
+  value:
+    name: logservice-logsearch-filters
+    release: logservice
+
+- type: replace
+  path: /instance_groups/name=ingestor/jobs/name=ingestor_syslog/properties/logstash_parser/filters?
+  value:
+    - logsearch-logservice: /var/vcap/jobs/logservice-logsearch-filters/logsearch-filters.conf
+
+- type: replace
+  path: /instance_groups/name=ingestor/jobs/name=ingestor_syslog/properties/logstash_parser/elasticsearch?
+  value:
+    index: logs-%{[@metadata][index]}-v6-%{+YYYY.MM.dd}
+
+- type: replace
+  path: /releases/-
+  value:
+    name: logservice
+    version: latest

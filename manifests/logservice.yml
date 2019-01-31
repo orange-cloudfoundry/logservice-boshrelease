@@ -32,7 +32,7 @@ instance_groups:
             syslog_addresses:
               - id: cada65a0-c972-4ccf-8eb2-bc58b0d147cb
                 name: loghost
-                company_id: tags@1368
+                company_id: apps@1368
                 description: Drain apps logs to loghost
                 bullets:
                   - "Available create parameters:"
@@ -88,9 +88,9 @@ stemcells:
 manifest_version: v1.5
 
 releases:
-- name: logservice
-  version: "1.5"
-  url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.4/logservice-1.5.tgz
-  sha1: ca8f23c0aeeb4237cea3cfc39f2dbe21de0837aa
-- name: bpm
-  version: latest
+  - name: logservice
+    version: "1.5"
+    url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.4/logservice-1.5.tgz
+    sha1: ca8f23c0aeeb4237cea3cfc39f2dbe21de0837aa
+  - name: bpm
+    version: latest

@@ -1,0 +1,42 @@
+---
+name: logservice-logsearch-filters
+
+
+description: |
+  The job compiles Elasticsearch mappings and filters specific to logservicey.
+  These mappings are add-ons to mappings and filters defined in Logsearch release.
+  It also handle filters for platform when using syslog-release.
+  It will parse CEF logs from https://docs.cloudfoundry.org/loggregator/cc-uaa-logging.html.
+  This can be considered as a drop in replacement logsearch-for-cloudfoundry release for filters and index mapping.
+
+templates:
+  index-mappings.json.erb:             index-mappings.json
+  index-mappings-app.json.erb:         index-mappings-app.json
+  index-mappings-platform.json.erb:    index-mappings-platform.json
+  logsearch-filters.conf.erb:          logsearch-filters.conf
+
+properties:
+  logservice_logsearch_filters.index_prefix:
+    description: |
+      Name prefix of your log indices that you use in `logstash_parser.elasticsearch.index` property set for your parser.
+    default: "logs-"
+  logservice_logsearch_filters.app_index_prefix:
+    description: |
+      Name prefix of your `app` log indices. If you don't split `app` and `platform` indices, then just set it with the value of `logservice_logsearch_filters.index_prefix`.
+    default: "logs-app"
+  logservice_logsearch_filters.platform_index_prefix:
+    description: |
+      Name prefix of your `platform` log indices. If you don't split `app` and `platform` indices, then just set it with the value of `logservice_logsearch_filters.index_prefix`.
+    default: "logs-platform"
+
+  logservice_logsearch_filters.index_settings:
+    description: Index settings for logs
+  logservice_logsearch_filters.app_index_settings:
+    description: Index settings for app logs
+  logservice_logsearch_filters.platform_index_settings:
+    description: Index settings for platform logs
+
+  logservice_logsearch_filters.company_id:
+    description: |
+      This is the company_id set in your tags to handle app parsing otherwise logs entries will be marked as platform logs.
+    default: "apps@1368"

@@ -1,0 +1,30 @@
+---
+name: logsearch-dns
+
+description: |
+  Give you the ability to target logsearch syslog ingestor by hitting on domain logsearch.service.cf.internal
+  This is useful when using syslog-release as addons, you can add this job on addon to be able to target on logsearch.service.cf.internal
+
+
+templates:
+    dns/aliases.json.erb: dns/aliases.json
+
+packages: []
+
+properties:
+  domain:
+    description: |
+      Domain where to found ingestor
+    default: "bosh"
+  network:
+    description: |
+      Network where to found ingestor
+    default: "default"
+  deployment:
+    description: |
+      Deployment where to found ingestor
+    default: "logsearch"
+  instance_group:
+    description: |
+      Instance group where to found ingestor
+    default: "ingestor"

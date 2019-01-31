@@ -1,0 +1,114 @@
+<%
+# This file contains mappings specific for 'app' indicies.
+#
+# By default all string fields are set as `keyword` (not analyzed values).
+#
+
+require 'json'
+
+keyword_default = { "type": "keyword", "index": true }.to_json
+
+%>
+{
+  "template" : "<%= p('logservice_logsearch_filters.app_index_prefix') %>*",
+  "settings": <%= p('logservice_logsearch_filters.app_index_settings', {}).to_json %>,
+  "order": 203,
+  "mappings" : {
+    "doc": {
+      <%# ------------ App specific fields %>
+      "properties": {
+        "@cf": {
+          "type": "object",
+          "dynamic": true,
+          "properties": {
+            "app":          <%= keyword_default %>,
+            "app_id":       <%= keyword_default %>,
+            "app_instance": { "type": "long" },
+            "org":          <%= keyword_default %>,
+            "org_id":       <%= keyword_default %>,
+            "space":        <%= keyword_default %>,
+            "space_id":     <%= keyword_default %>
+          }
+        },
+        "logmessage": {
+          "type": "object",
+          "dynamic": true,
+          "properties": {
+            "message_type":   <%= keyword_default %>
+          }
+        },
+        "rtr": {
+          "type": "object",
+          "dynamic": true,
+          "properties": {
+            "response_time_ms":       { "type": "long" },
+            "remote_addr":            <%= keyword_default %>,
+            "x_forwarded_proto":      <%= keyword_default %>,
+            "x_forwarded_for":        <%= keyword_default %>,
+            "vcap_request_id":        <%= keyword_default %>,
+            "body_bytes_sent":        { "type": "long" },
+            "hostname":               <%= keyword_default %>,
+            "timestamp":              <%= keyword_default %>,
+            "request_bytes_received": { "type": "long" },
+            "verb":                   <%= keyword_default %>,
+            "path":                   <%= keyword_default %>,
+            "http_spec":              <%= keyword_default %>,
+            "referer":                <%= keyword_default %>,
+            "http_user_agent":        <%= keyword_default %>,
+            "status":                 { "type": "long" },
+            "src": {
+              "type": "object",
+              "dynamic": true,
+              "properties": {
+                "host": <%= keyword_default %>,
+                "port": { "type": "long" }
+              }
+            },
+            "dst": {
+              "type": "object",
+              "dynamic": true,
+              "properties": {
+                "host": <%= keyword_default %>,
+                "port": { "type": "long" }
+              }
+            },
+            "app": {
+              "type": "object",
+              "dynamic": true,
+              "properties": {
+                "id": <%= keyword_default %>,
+                "index": { "type": "long" }
+              }
+            }
+          }
+        },
+        "geoip"  : {
+          "type" : "object",
+          "dynamic": true,
+          "properties": {
+            "location": { "type": "geo_point" },
+            "timezone": <%= keyword_default %>
+          }
+        },
+
+        "error": {
+          "type": "object",
+          "dynamic": true,
+          "properties": {
+            "source":  <%= keyword_default %>,
+            "code": { "type": "long" }
+          }
+        },
+
+        "@exception": {
+          "type": "object",
+          "dynamic": true,
+          "properties": {
+            "source":  <%= keyword_default %>,
+            "code": { "type": "long" }
+          }
+        }
+      }
+    }
+  }
+}

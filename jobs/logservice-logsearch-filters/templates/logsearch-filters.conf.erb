@@ -1,0 +1,445 @@
+# Setup snippet (should precede all other snippets)
+##--------------------------------
+# Setup conf. Sets general fields.|
+##--------------------------------
+
+# Replace the unicode empty character \u0000 with ""
+# Drop useless logs
+mutate {
+  gsub => [ "@message", '\u0000', ""]
+}
+if [@message] =~ /^\s*$/ or [@message] =~ /^#.*$/ {
+  drop { }
+}
+
+# Set index
+# @index_type stores type of index: app
+if [syslog_sd_id] == "<%= p('logservice_logsearch_filters.company_id') %>" {
+  mutate {
+    add_field => { "@index_type" => "app" }
+  }
+  json {
+    source => "@message"
+    add_tag => "json/auto_detect"
+    remove_field => ["@message"]
+  }
+} else {
+  mutate {
+    add_field => { "@index_type" => "platform" } # by default logs go to 'platform'
+  }
+}
+
+mutate {
+  add_field => { "[@metadata][index]" => "%{@index_type}" }
+}
+
+if [@cf][org] {index-mappings-app.json.erb
+               index-mappings.json.erb
+               index-mappings-platform.json.erb
+    mutate { replace => { "[@metadata][index]" => "%{[@metadata][index]}-%{[@cf][org]}" } }
+    if [@cf][space] {
+        mutate { replace => { "[@metadata][index]" => "%{[@metadata][index]}-%{[@cf][space]}" } }
+    }
+    if [@cf][app] {
+        mutate { replace => { "[@metadata][index]" => "%{[@metadata][index]}-%{[@cf][app]}" } }
+    }
+    mutate { lowercase => [ "[@metadata][index]" ] }
+}
+
+# Initialize @input, @shipper and @source
+mutate {
+  add_field => { "@input" => "%{@type}" }
+
+  rename => { "syslog_pri" => "[@shipper][priority]" }
+  replace => { "[@shipper][name]" => "%{syslog_program}_%{[@type]}" }
+
+  add_field => { "[@source][component]" => "%{syslog_program}" }
+  add_field => { "[@source][type]" => "syslog" }
+}
+
+
+##-- Platform
+# (Platform snippet should precede all other platform snippets)
+##------------------------------
+# Platform conf. Parses CF logs.|
+##------------------------------
+if [@index_type] == "platform" {
+
+    mutate {
+        replace => { "[@source][type]" => "system" } # default for platform logs
+        add_tag => "platform"
+    }
+
+    # Syslog message with RFC 5424 and the enterprise number is CF
+    if [syslog_sd_id] == "instance@47450" {
+        mutate {
+            add_field => {
+                "[@source][az]" => "%{[syslog_sd_params][az]}"
+                "[@source][deployment]" => "%{[syslog_sd_params][deployment]}"
+                "[@source][id]" => "%{[syslog_sd_params][id]}"
+                "[@source][job]" => "%{[syslog_sd_params][group]}"
+            }
+            replace => {
+                "[@source][type]" => "cf"
+                "@type" => "cf"
+            }
+            add_tag => "cf"
+        }
+    } else {
+        # Try parsing with possible CF formats
+        grok {
+            # Metron agent format (https://github.com/cloudfoundry/loggregator/blob/master/jobs/metron_agent/templates/syslog_forwarder.conf.erb#L53)
+            match => [ "@message", "\[job=%{NOTSPACE:[@source][job]} index=%{INT:[@source][index]:int}\]%{SPACE}%{GREEDYDATA:@message}" ]
+
+            # Syslog release format (https://github.com/cloudfoundry/syslog-release/blob/master/jobs/syslog_forwarder/templates/rsyslog.conf.erb#L56)
+            match => [ "@message", "\[bosh instance=%{NOTSPACE:[@source][deployment]}/%{NOTSPACE:[@source][job]}/%{NOTSPACE:[@source][job_index]}\]%{SPACE}%{GREEDYDATA:@message}" ]
+
+            overwrite => [ "@message" ] # @message
+            tag_on_failure => "fail/cloudfoundry/platform/grok"
+        }
+
+        if !("fail/cloudfoundry/platform/grok" in [tags]) {
+            mutate {
+                replace => { "[@source][type]" => "cf" }
+                replace => { "@type" => "cf" }
+                add_tag => "cf"
+            }
+        }
+    }
+}
+
+# special cases parsing
+# handle cef format defined at https://docs.cloudfoundry.org/loggregator/cc-uaa-logging.html
+# work has been made for uaa and credhub
+if [@message] =~ "^CEF:0\|" {
+  grok {
+    match => { "@message" => "CEF:0\|%{DATA:cef_device_vendor}\|%{DATA:cef_device_product}\|%{DATA:cef_device_version}\|%{DATA:cef_signature_id}\|%{GREEDYDATA:cef_name}\|%{NUMBER:cef_severity}\|%{GREEDYDATA:cef_extension}" }
+    overwrite => [ "@message" ]
+  }
+  mutate { add_field => { "[@source][version]" => "%{cef_device_version}" } }
+  mutate { replace => { "[@source][component]" => "%{cef_device_product}" } }
+  if [cef_device_vendor] != "cloud_foundry" {
+    mutate {
+      replace => {
+        "[@source][type]" => "%{cef_device_vendor}"
+        "@type" => "cf"
+      }
+    }
+  }
+
+  grok {
+    match => { "cef_extension" => "rt=%{NUMBER:access_timestamp} suser=%{DATA:suser} suid=%{DATA:suid} request=%{DATA:Request_URL} requestMethod=%{DATA:Request_Method} src=%{DATA:src} dst=%{DATA:dst} cs1Label=%{DATA:cs1Label} cs1=%{DATA:cs1} cs2Label=%{DATA:cs2Label} cs2=%{DATA:cs2} cs3Label=%{DATA:cs3Label} cs3=%{DATA:cs3} cs4Label=%{DATA:cs4Label} cs4=%{DATA:cs4} cs5Label=%{DATA:cs5Label} cs5=%{NOTSPACE:cs5}( cs6Label=%{DATA:cs6Label} cs6=%{NOTSPACE:cs6})?" }
+    overwrite => [ "cef_extension" ]
+  }
+
+  mutate {
+    add_field => {
+      "%{cs1Label}" => "%{cs1}"
+      "%{cs2Label}" => "%{cs2}"
+      "%{cs3Label}" => "%{cs3}"
+      "%{cs4Label}" => "%{cs4}"
+      "%{cs5Label}" => "%{cs5}"
+    }
+  }
+
+  if [cs6Label] {
+    mutate { add_field => { "%{cs6Label}" => "%{cs6}" } }
+  }
+
+  if [vcapRequestId] {
+    mutate { replace => { "@request_id" => "%{vcapRequestId}" } }
+  }
+
+  if [xForwardedFor] {
+    mutate {
+      add_field => { "X_Forwarded_For" => "%{xForwardedFor}" }
+      remove_field => [ "xForwardedFor" ]
+    }
+  }
+
+  if [requestDetails] {
+      json {
+        source => "requestDetails"
+        target => "parsed_json_data"
+        add_tag => "json/auto_detect"
+        remove_field => ["requestDetails"]
+        add_field => { "parsed_json_field_name" => "request_details"}
+      }
+  }
+
+  mutate {
+    remove_field => [ "cef_device_vendor", "cef_device_product", "cef_device_version", "cef_signature_id", "cef_name", "cef_severity", "cef_extension", "cs1Label", "cs1", "cs2Label", "cs2", "cs3Label", "cs3", "cs4Label", "cs4", "cs5Label", "cs5", "cs6Label", "cs6" ]
+  }
+}
+##----------------------------------
+# Haproxy conf. Parses haproxy logs.|
+##----------------------------------
+if [@source][component] == "haproxy" {
+
+    mutate {
+      replace => { "@type" => "haproxy" }
+      add_tag => "haproxy"
+    }
+
+    # Grok patterns are based on http://www.haproxy.org/download/1.7/doc/configuration.txt
+    # Two formats are used accordingly:
+    # 8.2.3. HTTP log format
+    # 8.2.5. Error log format
+
+    grok {
+      match => [ "@message", "%{IP:[haproxy][client_ip]}:%{INT:[haproxy][client_port]:int} \[%{DATA:[haproxy][accept_date]}\] %{NOTSPACE:[haproxy][frontend_name]} %{NOTSPACE:[haproxy][backend_name]}/%{NOTSPACE:[haproxy][server_name]} %{INT:[haproxy][time_request]:int}/%{INT:[haproxy][time_queue]:int}/%{INT:[haproxy][time_backend_connect]:int}/%{INT:[haproxy][time_backend_response]:int}/%{INT:[haproxy][time_duration]:int} %{INT:[haproxy][http_status_code]:int} %{NOTSPACE:[haproxy][bytes_read]:int} %{DATA:[haproxy][captured_request_cookie]} %{DATA:[haproxy][captured_response_cookie]} %{NOTSPACE:[haproxy][termination_state]} %{INT:[haproxy][actconn]:int}/%{INT:[haproxy][feconn]:int}/%{INT:[haproxy][beconn]:int}/%{INT:[haproxy][srvconn]:int}/%{NOTSPACE:[haproxy][retries]:int} %{INT:[haproxy][srv_queue]:int}/%{INT:[haproxy][backend_queue]:int} (\{%{DATA:[haproxy][captured_request_headers]}\})?( )?(\{%{DATA:[haproxy][captured_response_headers]}\})?( )?\"(?<message>(?<haproxy_http_request>(<BADREQ>|((%{WORD:[haproxy][http_request_verb]})?( %{GREEDYDATA})?))))\"" ]
+      match => [ "@message", "%{IP:[haproxy][client_ip]}:%{INT:[haproxy][client_port]:int} \[%{DATA:[haproxy][accept_date]}\] %{NOTSPACE:[haproxy][frontend_name]}/%{NOTSPACE:[haproxy][bind_name]}:%{SPACE}%{GREEDYDATA:message}" ]
+      tag_on_failure => "fail/cloudfoundry/platform-haproxy/grok"
+    }
+
+    if !("fail/cloudfoundry/platform-haproxy/grok" in [tags]) {
+
+        if [haproxy_http_request] {
+            mutate {
+              rename => {"haproxy_http_request" => "[haproxy][http_request]"}
+            }
+        }
+
+        mutate {
+          rename => {"message" => "@message"} # @message
+        }
+
+        # @level
+        if [haproxy][http_status_code] {
+            if [haproxy][http_status_code] >= 400 {
+                mutate {
+                  add_field => { "@level" => "ERROR" }
+                }
+            } else {
+                mutate {
+                  add_field => { "@level" => "INFO" }
+                }
+            }
+        }
+    }
+}
+
+##--------------------------
+# Uaa conf. Parses uaa logs.|
+##--------------------------
+if [@source][component] == "vcap.uaa" {
+
+    # ---- Parse UAA events (general)
+
+    mutate {
+      replace => { "[@source][component]" => "uaa" } # remove vcap. prefix
+      replace => { "@type" => "uaa" }
+      add_tag => "uaa"
+    }
+
+    grok {
+      match => { "@message" => "\[%{TIMESTAMP_ISO8601:[uaa][timestamp]}\]%{SPACE}uaa%{SPACE}-%{SPACE}%{NUMBER:[uaa][pid]:int}%{SPACE}\[%{DATA:[uaa][thread]}\]%{SPACE}....%{SPACE}%{LOGLEVEL:@level}%{SPACE}---%{SPACE}%{DATA:[uaa][log_category]}:%{SPACE}%{GREEDYDATA:@message}"}
+      overwrite => ["@message", "@level"] # @message, @level
+      tag_on_failure => "fail/cloudfoundry/platform-uaa/grok"
+    }
+
+    if [uaa][log_category] == "Audit" {
+
+        # override
+        mutate {
+          replace => { "@type" => "uaa-audit" }
+          add_tag => "audit"
+        }
+
+        # ---- Additional parsing: Audit events
+
+        grok {
+          match => { "@message" => "(?<uaa_audit_message>(%{WORD:[uaa][audit][type]}%{SPACE}\('%{DATA:[uaa][audit][data]}'\))):%{SPACE}principal=%{DATA:[uaa][audit][principal]},%{SPACE}origin=\[%{DATA:[uaa][audit][origin]}\],%{SPACE}identityZoneId=\[%{DATA:[uaa][audit][identity_zone_id]}\]"}
+          tag_on_failure => "fail/cloudfoundry/platform-uaa/audit/grok"
+        }
+
+        if !("fail/cloudfoundry/platform-uaa/audit/grok" in [tags]) {
+
+            # Audit @message
+            mutate {
+              rename => { "uaa_audit_message" => "@message" }
+            }
+
+            # extract audit_event_remote_address and geoip it
+            if "PrincipalAuthenticationFailure" == [uaa][audit][type] {
+                mutate {
+                  add_field => { "[uaa][audit][remote_address]" => "%{[uaa][audit][origin]}" }
+                }
+            }
+            if [uaa][audit][origin] =~ /remoteAddress=/ {
+                grok {
+                  match => { "[uaa][audit][origin]" => "remoteAddress=%{IP:[uaa][audit][remote_address]}" }
+                }
+            }
+            if [uaa][audit][remote_address] {
+               geoip {
+                 source => "[uaa][audit][remote_address]"
+               }
+            }
+
+            # split origin
+            mutate {
+              split =>  { "[uaa][audit][origin]" => ", " }
+            }
+
+        }
+
+    }
+}
+
+
+##-----------------------------
+# Vcap conf. Parses vcap* logs.|
+##-----------------------------
+if [@source][component] != "vcap.uaa" and [@source][component] =~ /vcap\..*/ {
+
+    # minus vcap. prefix
+    mutate {
+      gsub => ["[@source][component]", "^vcap\.", ""]
+    }
+
+    mutate {
+      replace => { "@type" => "vcap" }
+      add_tag => "vcap"
+    }
+
+    # Parse Cloud Foundry logs
+    if [@message] =~ /^\s*{".*}\s*$/ { # looks like JSON
+
+        # parse JSON message
+        json {
+          source => "@message"
+          target => "parsed_json_field"
+          remove_field => [ "@message" ]
+          add_field => { "parsed_json_field_name" => "%{[@source][component]}"}
+        }
+
+        if "_jsonparsefailure" in [tags] {
+            # Amend the failure tag to match our fail/${addon}/${filter}/${detail} standard
+            mutate {
+              add_tag => ["fail/cloudfoundry/platform-vcap/json"]
+              remove_tag => ["_jsonparsefailure"]
+            }
+
+        } else {
+
+            mutate {
+              rename => { "[parsed_json_field][message]" => "@message" } # @message
+            }
+
+            # @level
+            translate {
+              field => "[parsed_json_field][log_level]"
+              dictionary => [ "0", "DEBUG", "1", "INFO", "2", "ERROR", "3", "FATAL" ]
+              destination => "@level"
+              override => true
+              fallback => "%{[parsed_json_field][log_level]}"
+              remove_field => "[parsed_json_field][log_level]"
+            }
+        }
+
+    }
+}
+
+##------------------------------------+
+# Gorouter conf. Parses gorouter logs.|
+##------------------------------------+
+
+if [@source][component] == "gorouter" {
+            if [@message] =~ "\A\{.+\}\z" {
+                  json {
+                      source => "@message"
+                      add_tag => [ "router/syslog" ]
+                      tag_on_failure => [ "router/parsing_failed" ]
+                  }
+    } else {
+        grok {
+            match => { "@message" => "%{URIHOST:Request_Host} %{NOTSPACE} \[%{TIMESTAMP_ISO8601:access_timestamp}\] \"%{WORD:Request_Method} %{URIPATHPARAM:Request_URL} %{SYSLOGPROG:Request_Protocol}\" %{NUMBER:Status_Code:int} %{NUMBER:Bytes_Received:int} %{NUMBER:Bytes_Sent:int} \"%{NOTSPACE:Referer}\" \"%{DATA:User_Agent}\" \"%{URIHOST:Remote_Address}\" \"%{URIHOST:Backend_Address}\" x_forwarded_for:\"%{DATA:X_Forwarded_For}\" x_forwarded_proto:\"%{WORD:X_Forwarded_Proto}\" vcap_request_id:\"%{DATA:X_Vcap_Request_ID}\" response_time:%{NUMBER:Response_Time:float} app_id:\"%{DATA:app_id}\" app_index:\"%{DATA:app_index}\" %{GREEDYDATA:@message}" }
+            overwrite => [ "@message" ]
+            add_tag => "router/accesslog"
+            tag_on_failure => "router/parsing_failed"
+        }
+    }
+    mutate { replace => { "@request_id" => "%{X_Vcap_Request_ID}" } }
+    mutate { replace => { "[@cf][app_id]" => "%{app_id}" } }
+    mutate { replace => { "[@cf][app_instance]" => "%{app_index}" } }
+}
+
+# Teardown snippet (should follow all other snippets)
+##----------------------------------------------------------
+# Teardown conf. Performs fields post-processing & clean up.|
+##----------------------------------------------------------
+
+# -- Apply default settings for mandatory fields (if not set)
+
+# set syslog @level (if @level is not set yet)
+if ![@level] and [syslog_severity_code] { # @level
+
+    if [syslog_severity_code] <= 3 { # 0-Emergency, 1-Alert, 2-Critical, 3-Error
+        mutate {
+          add_field => { "@level" => "ERROR" }
+        }
+    } else if [syslog_severity_code] <= 5 { # 4-Warning, 5-Notice
+        mutate {
+          add_field => { "@level" => "WARN" }
+        }
+    } else if [syslog_severity_code] == 6 { # 6-Informational
+        mutate {
+          add_field => { "@level" => "INFO" }
+        }
+    } else if [syslog_severity_code] == 7 { #7-Debug
+        mutate {
+          add_field => { "@level" => "DEBUG" }
+        }
+    }
+}
+mutate {
+  uppercase => [ "@level" ]
+}
+
+# -- Rework fields
+
+if [@source][job] and [@source][index] {
+  mutate { add_field => { "[@source][vm]" => "%{[@source][job]}/%{[@source][index]}" } }
+}
+
+if ![@source][host] {
+    mutate { rename => { "[host]" => "[@source][host]" } }
+}
+
+# Downcase [parsed_json_field_name] and replace special characters with '_')..
+# .. and rename dynamic [parsed_json_field] field to this calculated name.
+if [parsed_json_field] and [parsed_json_field_name] {
+    mutate {
+      lowercase => [ "parsed_json_field_name" ]
+      gsub => [ "parsed_json_field_name", "[\s/\\?#-\.]", "_" ]
+    }
+    mutate {
+      rename => { "parsed_json_field" => "%{parsed_json_field_name}" }
+    }
+}
+
+mutate {
+  remove_field => [ "parsed_json_field_name" ]
+}
+
+# -- Cleanup unnecessary fields
+
+# Remove syslog_ fields
+mutate {
+  remove_field => "syslog_pri"
+  remove_field => "syslog_facility"
+  remove_field => "syslog_facility_code"
+  remove_field => "syslog_message"
+  remove_field => "syslog_severity"
+  remove_field => "syslog_severity_code"
+  remove_field => "syslog_program"
+  remove_field => "syslog_timestamp"
+  remove_field => "syslog_hostname"
+  remove_field => "syslog_pid"
+}
+
+# Cleanup
+mutate {
+  remove_field => [ "@version", "host", "port", "_logstash_input" ]
+}

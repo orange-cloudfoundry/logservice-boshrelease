@@ -1,0 +1,10 @@
+<%
+def canonicalize(str)
+  str.downcase.gsub(/_/, "-").gsub(/[^a-z0-9\-\*]/, "")
+end
+%>
+{
+  "logsearch.service.cf.internal": [
+    "*.<%= canonicalize(p('instance_group')) %>.<%= canonicalize(p('network')) %>.<%= canonicalize(p('deployment')) %>.<%= canonicalize(p('domain')) %>"
+  ]
+}
