@@ -20,7 +20,6 @@ if [syslog_sd_id] == "<%= p('logservice_logsearch_filters.company_id') %>" {
   }
   json {
     source => "@message"
-    add_tag => "json/auto_detect"
     remove_field => ["@message"]
   }
 } else {
@@ -33,9 +32,7 @@ mutate {
   add_field => { "[@metadata][index]" => "%{@index_type}" }
 }
 
-if [@cf][org] {index-mappings-app.json.erb
-               index-mappings.json.erb
-               index-mappings-platform.json.erb
+if [@cf][org] {
     mutate { replace => { "[@metadata][index]" => "%{[@metadata][index]}-%{[@cf][org]}" } }
     if [@cf][space] {
         mutate { replace => { "[@metadata][index]" => "%{[@metadata][index]}-%{[@cf][space]}" } }
@@ -160,8 +157,7 @@ if [@message] =~ "^CEF:0\|" {
   if [requestDetails] {
       json {
         source => "requestDetails"
-        target => "parsed_json_data"
-        add_tag => "json/auto_detect"
+        target => "parsed_json_field"
         remove_field => ["requestDetails"]
         add_field => { "parsed_json_field_name" => "request_details"}
       }
@@ -397,6 +393,43 @@ mutate {
   uppercase => [ "@level" ]
 }
 
+# try to find source geoip when it can be
+if [X_Forwarded_For] {
+  mutate {
+    add_field => { "@real_remote_addr" => "%{X_Forwarded_For}" }
+  }
+}
+
+if [rtr] {
+  if [rtr][x_forwarded_for] {
+    mutate {
+      add_field => { "@real_remote_addr" => "%{[rtr][x_forwarded_for]}" }
+    }
+  }else {
+    mutate {
+      add_field => { "@real_remote_addr" => "%{[rtr][remote_addr]}" }
+    }
+  }
+}
+
+if !([@real_remote_addr]) and [Remote_Address] {
+  mutate {
+      add_field => { "@real_remote_addr" => "%{Remote_Address}" }
+  }
+}
+
+if !([@real_remote_addr]) and [src] {
+  mutate {
+      add_field => { "@real_remote_addr" => "%{src}" }
+  }
+}
+
+if [@real_remote_addr] and [@real_remote_addr] !~ "^((10\.)|(172\.16\.)|(192\.168\.)|(127\.0\.0\.1))" {
+  geoip {
+    source => "@real_remote_addr"
+  }
+}
+
 # -- Rework fields
 
 if [@source][job] and [@source][index] {
@@ -442,4 +475,8 @@ mutate {
 # Cleanup
 mutate {
   remove_field => [ "@version", "host", "port", "_logstash_input" ]
+}
+
+mutate {
+  remove_tag => [ "fail/cloudfoundry/platform/grok" ]
 }

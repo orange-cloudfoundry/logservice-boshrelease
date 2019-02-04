@@ -40,3 +40,11 @@ properties:
     description: |
       This is the company_id set in your tags to handle app parsing otherwise logs entries will be marked as platform logs.
     default: "apps@1368"
+
+  logservice_logsearch_filters.cef_output:
+    description: Set another output for cef event (specifically for qradar or other security product)
+    example:
+      plugin: tcp
+      options:
+        host: 192.168.1.1
+        port: 553
