@@ -7,7 +7,7 @@ releases:
 addons:
   - name: logsearch-dns
     exclude:
-      deployments: ["logservice"]
+      deployments: ["logservice", "logsearch"]
     jobs:
       - name: logsearch-dns
         release: logservice

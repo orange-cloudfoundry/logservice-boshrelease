@@ -26,6 +26,13 @@ if [syslog_sd_id] == "<%= p('logservice_logsearch_filters.company_id') %>" {
   mutate {
     add_field => { "@index_type" => "platform" } # by default logs go to 'platform'
   }
+  if [@message] =~ /^\{/ {
+    json {
+      source => "@message"
+      add_tag => "json/auto_detect"
+      remove_field => ["@message"]
+    }
+  }
 }
 
 mutate {
@@ -108,7 +115,10 @@ if [@index_type] == "platform" {
 # special cases parsing
 # handle cef format defined at https://docs.cloudfoundry.org/loggregator/cc-uaa-logging.html
 # work has been made for uaa and credhub
-if [@message] =~ "^CEF:0\|" {
+if [@message] =~ "^.*CEF:0\|" {
+  mutate {
+    gsub => [ "@message", "^.*CEF:0\|", "CEF:0|" ]
+  }
   grok {
     match => { "@message" => "CEF:0\|%{DATA:cef_device_vendor}\|%{DATA:cef_device_product}\|%{DATA:cef_device_version}\|%{DATA:cef_signature_id}\|%{GREEDYDATA:cef_name}\|%{NUMBER:cef_severity}\|%{GREEDYDATA:cef_extension}" }
   }
@@ -166,7 +176,7 @@ if [@message] =~ "^CEF:0\|" {
   }
 
   mutate {
-    remove_field => [ "cef_device_vendor", "cef_device_product", "cef_device_version", "cef_signature_id", "cef_name", "cef_severity", "cef_extension", "cs1Label", "cs1", "cs2Label", "cs2", "cs3Label", "cs3", "cs4Label", "cs4", "cs5Label", "cs5", "cs6Label", "cs6" ]
+    remove_field => [ "cef_device_vendor", "cef_device_product", "cef_device_version", "cef_signature_id", "cef_name", "cef_severity", "cef_extension", "cs1Label", "cs1", "cs2Label", "cs2", "cs3Label", "cs3", "cs4Label", "cs4", "cs5Label", "cs5", "cs6Label", "cs6", "@message" ]
   }
 }
 ##----------------------------------
