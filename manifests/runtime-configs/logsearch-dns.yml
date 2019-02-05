@@ -1,0 +1,13 @@
+releases:
+  - name: logservice
+    version: "1.6"
+    url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.6/logservice-1.6.tgz
+    sha1: ca8f23c0aeeb4237cea3cfc39f2dbe21de0837aa
+
+addons:
+  - name: logsearch-dns
+    exclude:
+      deployments: ["logservice"]
+    jobs:
+      - name: logsearch-dns
+        release: logservice

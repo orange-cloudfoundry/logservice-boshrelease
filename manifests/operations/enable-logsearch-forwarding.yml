@@ -1,0 +1,9 @@
+- type: replace
+  path: /instance_groups/name=logservice/jobs/-
+  value:
+    name: logsearch-dns
+    release: logservice
+
+- type: replace
+  path: /instance_groups/name=logservice/jobs/name=logservice/properties/logservice/syslog_addresses/name=loghost/urls/0
+  value: tcp://logsearch.service.cf.internal:5514
