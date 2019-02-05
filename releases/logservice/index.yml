@@ -5,8 +5,6 @@ builds:
     version: "1.4"
   993b076c-c804-40cc-46a8-2d92d1d05ed0:
     version: "1.3"
-  f12a73a3-f94a-478e-5d96-402042f60544:
-    version: "1.6"
   f6df91f2-5e06-4a11-51a5-38db58af51da:
     version: "1.2"
 format-version: "2"
