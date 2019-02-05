@@ -89,8 +89,8 @@ manifest_version: v1.5
 
 releases:
   - name: logservice
-    version: "1.6"
-    url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.6/logservice-1.6.tgz
+    version: "1.7"
+    url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.7/logservice-1.7.tgz
     sha1: 4eda1580401732eac4f76b179b9b298c0973f395
   - name: bpm
     version: latest
