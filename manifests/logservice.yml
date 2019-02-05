@@ -91,6 +91,6 @@ releases:
   - name: logservice
     version: "1.7"
     url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.7/logservice-1.7.tgz
-    sha1: 4eda1580401732eac4f76b179b9b298c0973f395
+    sha1: a7e642124157d837e567a4087f01c698d444a356
   - name: bpm
     version: latest
