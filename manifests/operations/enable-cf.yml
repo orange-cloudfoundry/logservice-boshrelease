@@ -8,7 +8,7 @@
 
 - type: replace
   path: /variables/name=log_service_ssl/options/ca?
-  value: /((director_name))/cf/logservice-ca
+  value: /((director_name))/cf/service_cf_internal_ca
 
 - type: replace
   path: /instance_groups/name=logservice/jobs/name=broker-registrar/properties/logservice/broker/host
