@@ -23,15 +23,16 @@ keyword_default = { "type": "keyword", "index": true }.to_json
           "dynamic": true,
           "properties" : {
             "location" : { "type" : "geo_point" }
-          },
-          "cef_device_product": <%= keyword_default %>,
-          "cef_device_vendor":  <%= keyword_default %>,
-          "cef_device_version": <%= keyword_default %>,
-          "cef_extension":      <%= keyword_default %>,
-          "cef_name":           <%= keyword_default %>,
-          "cef_severity":       <%= keyword_default %>,
-          "cef_signature_id":   <%= keyword_default %>
+          }
         },
+        
+        "cef_device_product": <%= keyword_default %>,
+        "cef_device_vendor":  <%= keyword_default %>,
+        "cef_device_version": <%= keyword_default %>,
+        "cef_extension":      <%= keyword_default %>,
+        "cef_name":           <%= keyword_default %>,
+        "cef_severity":       <%= keyword_default %>,
+        "cef_signature_id":   <%= keyword_default %>,
 
         "uaa": {
           "type": "object",
