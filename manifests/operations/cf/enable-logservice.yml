@@ -10,21 +10,12 @@
         query: '*'
 
 - type: replace
-  path: /variables/-
-  value:
-    name: logservice-ca
-    options:
-      common_name: logservice-ca
-      is_ca: true
-    type: certificate
-
-- type: replace
   path: /instance_groups/name=adapter/jobs/name=ca_certs?/release
   value: os-conf
 
 - type: replace
   path: /instance_groups/name=adapter/jobs/name=ca_certs/properties?/cert_list/-
-  value: ((logservice-ca.certificate))
+  value: ((service_cf_internal_ca.certificate))
 
 - type: replace
   path: /releases/name=os-conf?
