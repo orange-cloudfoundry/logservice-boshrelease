@@ -2,7 +2,7 @@ releases:
   - name: logservice
     version: "1.8"
     url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.8/logservice-1.8.tgz
-    sha1: a7e642124157d837e567a4087f01c698d444a356
+    sha1: 084ec5e0767551be2bb1e68f0587aafa32632dd0
 
 addons:
   - name: logsearch-dns
