@@ -49,6 +49,16 @@ keyword_default = { "type": "keyword", "index": true }.to_json
           }
         },
 
+        "@request": {
+          "type": "object",
+          "dynamic": true,
+          "properties": {
+            "status": { "type": "long" },
+            "src":    { "type": "ip", "index": true },
+            "dst":    { "type": "ip", "index": true }
+          }
+        },
+
         "haproxy": {
           "type": "object",
           "dynamic": true,

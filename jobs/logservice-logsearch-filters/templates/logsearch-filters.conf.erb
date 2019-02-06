@@ -124,17 +124,19 @@ if [@message] =~ "^.*CEF:0\|" {
   }
   mutate { add_field => { "[@source][version]" => "%{cef_device_version}" } }
   mutate { replace => { "[@source][component]" => "%{cef_device_product}" } }
-  if [cef_device_vendor] != "cloud_foundry" {
-    mutate {
-      replace => {
-        "[@source][type]" => "%{cef_device_vendor}"
-        "@type" => "cf"
-      }
+  mutate {
+    replace => {
+      "[@source][type]" => "CEF_%{cef_device_vendor}"
+      "@type" => "cf"
     }
   }
 
+  if [@source][type] == "CEF_CloudFoundry" {
+    mutate { replace => { "[@source][type]" => "CEF_cloud_foundry" } }
+  }
+
   mutate {
-      replace => { "[@source][type]" => "CEF_%{[@source][type]}" }
+    remove_field => [ "@message" ]
   }
 
   grok {
@@ -176,8 +178,24 @@ if [@message] =~ "^.*CEF:0\|" {
             add_field => { "parsed_json_field_name" => "request_details"}
           }
       }
+
+      if [src] {
+        mutate { add_field => { "[@request][src]" => "%{src}" } }
+        mutate { remove_field => [ "src" ] }
+      }
+
+      if [dst] {
+        mutate { add_field => { "[@request][dst]" => "%{dst}" } }
+        mutate { remove_field => [ "dst" ] }
+      }
+
+      if [httpStatusCode] {
+        mutate { add_field => { "[@request][status]" => "%{httpStatusCode}" } }
+        mutate { remove_field => [ "httpStatusCode" ] }
+      }
+
       mutate {
-        remove_field => [ "cef_device_vendor", "cef_device_product", "cef_device_version", "cef_signature_id", "cef_name", "cef_severity", "cef_extension", "cs1Label", "cs1", "cs2Label", "cs2", "cs3Label", "cs3", "cs4Label", "cs4", "cs5Label", "cs5", "cs6Label", "cs6", "@message" ]
+        remove_field => [ "cef_device_vendor", "cef_device_product", "cef_device_version", "cef_signature_id", "cef_name", "cef_severity", "cef_extension", "cs1Label", "cs1", "cs2Label", "cs2", "cs3Label", "cs3", "cs4Label", "cs4", "cs5Label", "cs5", "cs6Label", "cs6" ]
       }
   }
 }
@@ -436,9 +454,15 @@ if !([@real_remote_addr]) and [Remote_Address] {
   }
 }
 
-if !([@real_remote_addr]) and [src] {
+if !([@real_remote_addr]) and [rtr][src] {
   mutate {
-      add_field => { "@real_remote_addr" => "%{src}" }
+      add_field => { "@real_remote_addr" => "%{[rtr][src]}" }
+  }
+}
+
+if !([@real_remote_addr]) and [@request][src] {
+  mutate {
+      add_field => { "@real_remote_addr" => "%{[@request][src]}" }
   }
 }
 
