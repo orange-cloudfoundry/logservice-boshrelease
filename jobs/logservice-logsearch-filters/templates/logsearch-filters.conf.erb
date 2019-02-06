@@ -20,7 +20,6 @@ if [syslog_sd_id] == "<%= p('logservice_logsearch_filters.company_id') %>" {
   }
   json {
     source => "@message"
-    remove_field => ["@message"]
   }
 } else {
   mutate {
