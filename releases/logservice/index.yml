@@ -1,6 +1,8 @@
 builds:
   14408bb4-cf18-4d1c-7142-381fcf6bc640:
     version: "1.6"
+  1add2447-a016-46b5-6957-73e673bed30b:
+    version: 1.11.2
   25f7723d-b5ff-4894-5340-a74b9c5aa4ba:
     version: "1.5"
   38deba8c-b08a-431b-4175-a93653bc7821:
@@ -17,6 +19,8 @@ builds:
     version: "1.12"
   e1740569-c6c9-461d-69ce-74d9da7a3f02:
     version: "1.7"
+  f511e890-b919-4397-4474-ebd33ce0f37a:
+    version: 1.11.1
   f6df91f2-5e06-4a11-51a5-38db58af51da:
     version: "1.2"
   ff7c6c5c-69b5-4158-7245-a9311156c35c:

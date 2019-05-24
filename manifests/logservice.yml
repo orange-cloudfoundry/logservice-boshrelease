@@ -43,7 +43,7 @@ instance_groups:
                   - tcp://loghost.example.net:1512
                 tags:
                   s: "{{.Space}}"
-                  env: "{{if hasSuffix .Org \"-prod\" }}prod{{ else }}dev{{ end }}"
+                  env: "{{if hasSuffix .Org \"-staging\" }}dev{{ else }}prod{{ end }}"
                   audience: "mycompagny"
                   fmt: "json"
             ssl_cert: ((log_service_ssl.certificate))

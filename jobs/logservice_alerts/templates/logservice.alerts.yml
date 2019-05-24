@@ -1,6 +1,7 @@
 groups:
   - name: logservice
     rules:
+
       - alert: LogserviceDurationTooHigh
         expr: sum(rate(logs_sent_duration_sum[10m])) by (instance) * 1000 > <%= p('logservice_alerts.duration.threshold_ms') %>
         for: <%= p('logservice_alerts.duration.evaluation_time') %>
@@ -20,3 +21,19 @@ groups:
         annotations:
           summary: "Logservice is dropping some logs at instance `{{$labels.instance}}`"
           description: "Logservice is droping more than `%<= p('logservice_alerts.error.threshold') %>` logs/s at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
+
+      - alert: LogserviceNoLogs
+        expr: (sum(increase(logs_sent_total[15m])) or vector(0)) == 0
+        for: <%= p('logservice_alerts.errors.evaluation_time') %>
+        labels:
+          service: logservice
+          severity: critical
+        annotations:
+          summary: "Logservice reports no forwarded logs for the past 15 minutes"
+          description: |
+            No logs were forwarded by logservice in the last 15 minutes
+
+            This should not impact customers because applications are not affected but
+            it's still a serious failure since produced logs are definitely lost.
+
+            Please contact Cloud Foundry admin team
