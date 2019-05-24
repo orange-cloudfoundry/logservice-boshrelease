@@ -1,0 +1,46 @@
+name: logservice
+version: 1.13.1
+commit_hash: 0b607bf
+uncommitted_changes: false
+jobs:
+- name: broker-registrar
+  version: 4d6ebe572886e6b4f5fd0657893eda6042a58cd9
+  fingerprint: 4d6ebe572886e6b4f5fd0657893eda6042a58cd9
+  sha1: 6dde1aa975a77ed29e1205aa0baeca4f6c23d410
+- name: logsearch-dns
+  version: 29d65e5befeaaee3b7fba7d77e9468e895f53eeb
+  fingerprint: 29d65e5befeaaee3b7fba7d77e9468e895f53eeb
+  sha1: 36b634c627a8cfa50d2de959ac084e4ffdf85dc0
+- name: logservice
+  version: 4cce27d4699b5d9622f2a7a87c25bdcefe36e6e0
+  fingerprint: 4cce27d4699b5d9622f2a7a87c25bdcefe36e6e0
+  sha1: dc96b0e9b559e0c8844cc0d8624ffb71488aab1c
+- name: logservice-logsearch-filters
+  version: a64f6f9d5365ce1b124bb08ff5caefd45662df65
+  fingerprint: a64f6f9d5365ce1b124bb08ff5caefd45662df65
+  sha1: 37ec0c55ddffacdce2db5e7a9b3e3824995300c0
+- name: logservice_alerts
+  version: 3fcc7f6f043190c1432eb5581827c5f282378f81
+  fingerprint: 3fcc7f6f043190c1432eb5581827c5f282378f81
+  sha1: 6780ddfe26aa600ec9dbc5f735c551cead38f3e9
+- name: logservice_dashboards
+  version: a14349b8075d2c018bc9f4697ac9862abef8610c
+  fingerprint: a14349b8075d2c018bc9f4697ac9862abef8610c
+  sha1: 3096e11e4f67c736620e41b2d7a8009737566ca7
+packages:
+- name: cf-cli-6-linux
+  version: af6517f138b3ed0584b263f6273f30f22f6e5c9d
+  fingerprint: af6517f138b3ed0584b263f6273f30f22f6e5c9d
+  sha1: 49c68230bc07d100e34e8505d637e077c5dd68ed
+  dependencies: []
+- name: golang-1.10-linux
+  version: 84480dd6f6ab2d61546f28c05ed2705c9c642607
+  fingerprint: 84480dd6f6ab2d61546f28c05ed2705c9c642607
+  sha1: 491bd2416037957858a1e0450193f116285a6be7
+  dependencies: []
+- name: logservice
+  version: f3b1c8ef653f68fc5a47663dd79d935015d9382b
+  fingerprint: f3b1c8ef653f68fc5a47663dd79d935015d9382b
+  sha1: ad1b2a195fcce79acbbcb84ccbca041fac8357b3
+  dependencies:
+  - golang-1.10-linux
