@@ -10,7 +10,7 @@ groups:
           severity: warning
         annotations:
           summary: "Logservice has high latency at instance `{{$labels.instance}}`"
-          description: "Average process time of logs is greater that `%<= p('logservice_alerts.duration.threshold_ms') %>` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.duration.evaluation_time') %>"
+          description: "Average process time of logs is greater that `<%= p('logservice_alerts.duration.threshold_ms') %>` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.duration.evaluation_time') %>"
 
       - alert: LogserviceDropRateTooHigh
         expr: sum(rate(logs_sent_errors_total[10m])) by (instance) > <%= p('logservice_alerts.error.threshold') %>
@@ -20,7 +20,7 @@ groups:
           severity: critical
         annotations:
           summary: "Logservice is dropping some logs at instance `{{$labels.instance}}`"
-          description: "Logservice is droping more than `%<= p('logservice_alerts.error.threshold') %>` logs/s at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
+          description: "Logservice is droping more than `<%= p('logservice_alerts.error.threshold') %>` logs/s at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
 
       - alert: LogserviceNoLogs
         expr: (sum(increase(logs_sent_total[15m])) or vector(0)) == 0
