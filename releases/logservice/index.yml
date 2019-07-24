@@ -11,6 +11,8 @@ builds:
     version: 1.13.1
   5f70b61b-e941-4bbc-69cf-41ecd73d582d:
     version: "1.4"
+  730a90ae-22b0-443f-7232-e6c78c5da38f:
+    version: 1.13.3
   76f651b6-80bc-4d1b-4bef-45a6f5a63c49:
     version: "1.8"
   88b3a06a-3561-44de-5068-14976430209e:
