@@ -5,7 +5,9 @@ generate-filters:
 create-release: generate-filters
 				bosh create-release --version=${RELEASE_VERSION} --tarball=/tmp/logservice-${RELEASE_VERSION}.tgz --force
 
-dist: generate-filters
+dist: generate-filters rawdist
+
+rawdist:
 		bosh create-release --version=${RELEASE_VERSION} --tarball=/tmp/logservice-${RELEASE_VERSION}.tgz --final
 		git commit -am "bump to ${RELEASE_VERSION}"
 		git push
