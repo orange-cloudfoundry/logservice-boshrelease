@@ -8,6 +8,7 @@ services:
       syslog_drain_url: "<%= p('logservice.syslog_drain_url') %>"
       skip_ssl_validation: <%= p('logservice.skip_ssl_validation').to_json %>
       log_level: "<%= p('logservice.log_level') %>"
+      cache_duration: "<%= p('logservice.cache_duration') %>"
       log_no_color: true
       log_json: true
       virtual_host: false

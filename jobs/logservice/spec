@@ -22,6 +22,9 @@ properties:
   logservice.skip_ssl_validation:
     description: ""
     default: false
+  logservice.cache_duration:
+    description: ""
+    default: "always"
   logservice.mysql.user:
     description: ""
   logservice.mysql.password:
