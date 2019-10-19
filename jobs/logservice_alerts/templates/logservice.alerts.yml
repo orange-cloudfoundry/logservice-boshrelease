@@ -9,7 +9,7 @@ groups:
         expr: |
           avg(
             (job:logs_sent_duration_sum:increase10m / job:logs_sent_duration_count:increase10m) > 0
-          ) by (instance) > <%= p('logservice_alerts.duration.threshold_ms') %>
+          ) by (instance) * 1000 > <%= p('logservice_alerts.duration.threshold_ms') %>
         for: <%= p('logservice_alerts.duration.evaluation_time') %>
         labels:
           service: logservice
