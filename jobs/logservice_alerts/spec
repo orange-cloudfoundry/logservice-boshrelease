@@ -9,10 +9,10 @@ templates:
 properties:
   logservice_alerts.duration.threshold_ms:
     description: "Average forward duration too high threshold (ms)"
-    default: 100
+    default: 5ms
   logservice_alerts.duration.evaluation_time:
     description: "Average forward duration too high evaluation time"
-    default: 15m
+    default: 5m
 
   logservice_alerts.error.threshold:
     description: "Forward drop rate too high threshold"
