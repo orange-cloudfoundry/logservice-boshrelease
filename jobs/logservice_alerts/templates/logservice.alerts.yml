@@ -1,9 +1,15 @@
 groups:
   - name: logservice
     rules:
-
+      - record: job:logs_sent_duration_sum:increase10m
+        expr: increase(logs_sent_duration_sum[10m])
+      - record: job:logs_sent_duration_count:increase10m
+        expr: increase(logs_sent_duration_count[10m])
       - alert: LogserviceDurationTooHigh
-        expr: sum(rate(logs_sent_duration_sum[10m])) by (instance) * 1000 > <%= p('logservice_alerts.duration.threshold_ms') %>
+        expr: |
+          avg(
+            (job:logs_sent_duration_sum:increase10m / job:logs_sent_duration_count:increase10m) > 0
+          ) by (instance) > <%= p('logservice_alerts.duration.threshold_ms') %>
         for: <%= p('logservice_alerts.duration.evaluation_time') %>
         labels:
           service: logservice
