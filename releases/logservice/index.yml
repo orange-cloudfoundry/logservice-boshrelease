@@ -27,6 +27,8 @@ builds:
     version: 1.13.6
   ceb348fa-46cf-4b72-5dc4-dfc62274d315:
     version: "1.12"
+  d29311db-04ba-4e5f-43e4-c73b81bc191f:
+    version: 1.13.11
   d8cb17cf-9d46-4ee6-5fbd-ca733535a775:
     version: 1.13.8
   e1740569-c6c9-461d-69ce-74d9da7a3f02:
