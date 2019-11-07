@@ -43,8 +43,13 @@ if [@cf][org] {
     if [@cf][space] {
         mutate { replace => { "[@metadata][index]" => "%{[@metadata][index]}-%{[@cf][space]}" } }
     }
-    if [@cf][app] {
-        mutate { replace => { "[@metadata][index]" => "%{[@metadata][index]}-%{[@cf][app]}" } }
+    mutate { lowercase => [ "[@metadata][index]" ] }
+}
+
+if [@cf][app] {
+    mutate { replace => { "[@metadata][index]" => "%{[@metadata][index]}-%{[@cf][app]}" } }
+    mutate {
+        gsub => ["[@metadata][index]", "/", "-"]
     }
     mutate { lowercase => [ "[@metadata][index]" ] }
 }
