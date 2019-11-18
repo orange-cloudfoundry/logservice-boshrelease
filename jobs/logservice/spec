@@ -56,4 +56,6 @@ properties:
     description: ""
   logservice.ssl_key:
     description: ""
-
+  logservice.parsing_keys:
+    description: ""
+    default: []

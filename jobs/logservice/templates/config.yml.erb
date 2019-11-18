@@ -15,6 +15,7 @@ services:
       sql_cnx_max_open: <%= p('logservice.mysql.cnx.max_open') %>
       sql_cnx_max_idle: <%= p('logservice.mysql.cnx.max_idle') %>
       sql_cnx_max_life: <%= p('logservice.mysql.cnx.max_life') %>
+      parsing_keys: <%= p('logservice.parsing_keys').to_json %>
 <% if_p('logservice.ssl_cert') do %>
 <% if_p('logservice.ssl_key') do %>
       ssl_cert_file: /var/vcap/jobs/logservice/config/ssl_cert.pem
