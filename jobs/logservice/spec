@@ -11,6 +11,12 @@ packages:
   - logservice
 
 properties:
+  logservice.port:
+    description: 8088
+  logservice.tls_port:
+    description: 8089
+  logservice.prefer_tls:
+    description: false
   logservice.syslog_addresses:
     description: ""
   logservice.broker.username:

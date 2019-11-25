@@ -51,7 +51,7 @@ instance_groups:
             broker:
               username: logservice-broker
               password: ((logservice-broker-password))
-            syslog_drain_url: https://url-to-logservice.example.net:8089
+            syslog_drain_url: url-to-logservice.example.net
             skip_ssl_validation: false
             mysql:
               user: logservice

@@ -2,6 +2,9 @@ services:
   - name: my-config
     tags: [ "config" ]
     credentials:
+      port: <%= p('logservice.port') %>
+      tls_port: <%= p('logservice.tls_port') %>
+      prefer_tls: <%= p('logservice.prefer_tls') %>
       syslog_addresses: <%= p('logservice.syslog_addresses').to_json %>
       broker_username: "<%= p('logservice.broker.username') %>"
       broker_password: "<%= p('logservice.broker.password') %>"
