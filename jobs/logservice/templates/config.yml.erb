@@ -5,7 +5,7 @@ services:
       port: <%= p('logservice.port') %>
       tls_port: <%= p('logservice.tls_port') %>
       external_url: <% if_p('logservice.external_url') do |item| %><%= item %><% end %>
-      disallow_logs_from_external: <%= p('logservice.external_url') %>
+      disallow_logs_from_external: <%= p('logservice.disallow_logs_from_external') %>
       disable_drain_type: <%= p('logservice.disable_drain_type') %>
       prefer_tls: <%= p('logservice.prefer_tls') %>
       syslog_addresses: <%= p('logservice.syslog_addresses').to_json %>
