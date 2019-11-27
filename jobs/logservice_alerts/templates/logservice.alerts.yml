@@ -26,7 +26,7 @@ groups:
           severity: critical
         annotations:
           summary: "Logservice is dropping some logs at instance `{{$labels.instance}}`"
-          description: "Logservice is droping more than `<%= p('logservice_alerts.error.threshold') %>` logs/s at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
+          description: "Logservice is droping more than `<%= p('logservice_alerts.errors.threshold') %>` logs/s at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
 
       - alert: LogserviceNoLogs
         expr: (sum(increase(logs_sent_total[15m])) or vector(0)) == 0
