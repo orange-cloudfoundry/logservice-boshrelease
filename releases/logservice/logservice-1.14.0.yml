@@ -1,0 +1,59 @@
+name: logservice
+version: 1.14.0
+commit_hash: a17c90f
+uncommitted_changes: false
+jobs:
+- name: bbr-logservicedb
+  version: 64b72ed815026a7714990ba364c3be8f09ee1eae171653409e3bb8f3d3cc4d78
+  fingerprint: 64b72ed815026a7714990ba364c3be8f09ee1eae171653409e3bb8f3d3cc4d78
+  sha1: sha256:db2f06e569b4d1915474be02e5ad43ee7d66a20ea1bb68a2fbfd87d0eb951178
+  packages: []
+- name: broker-registrar
+  version: 501a1f387e3272b90b3f3da7b0f01998cb2f7efbc6978dee52e8095999de7733
+  fingerprint: 501a1f387e3272b90b3f3da7b0f01998cb2f7efbc6978dee52e8095999de7733
+  sha1: sha256:d46d7a322c6ce18ebd682ba64ca87a5411929922ba95df8a46c3ad448afa7ed3
+  packages:
+  - cf-cli-6-linux
+- name: logsearch-dns
+  version: d0810c7bfacc3376d30b20f41f1a51dbfb1b99dac083f422e70c88d233a2ec63
+  fingerprint: d0810c7bfacc3376d30b20f41f1a51dbfb1b99dac083f422e70c88d233a2ec63
+  sha1: sha256:4270df922c355e947bcf3d8104f78d2e87aaf3a3b5f857cbb957dce2b3266207
+  packages: []
+- name: logservice
+  version: 6e121e1ed12e4b1f918f827a3b12de967e78d19689b101e67d7f8189de061da1
+  fingerprint: 6e121e1ed12e4b1f918f827a3b12de967e78d19689b101e67d7f8189de061da1
+  sha1: sha256:f4892046fa1b68e5cbfdfc9f858ab2202174e626895ad9f56ab26897f195803f
+  packages:
+  - logservice
+- name: logservice-logsearch-filters
+  version: a2b8ce0627dbdec29aace299322281e29a502d24df27d7f8a040865681c9b388
+  fingerprint: a2b8ce0627dbdec29aace299322281e29a502d24df27d7f8a040865681c9b388
+  sha1: sha256:ed64fcc6f722ebda35a4613ae5f5169e0322c61201e0ee77e6cd60ee3848c82c
+  packages: []
+- name: logservice_alerts
+  version: f56c5adcb1ea273c7b7fe79ba630188b05e6c6cd82582160ea7b1bbee3cbe8bb
+  fingerprint: f56c5adcb1ea273c7b7fe79ba630188b05e6c6cd82582160ea7b1bbee3cbe8bb
+  sha1: sha256:26c2b93ab852da3aae47e0269e338fb15b5b204f51d6ef7ba63ff279ca375a46
+  packages: []
+- name: logservice_dashboards
+  version: a3d0dca06c880bd38a3fb56fbd7e0e2d493ada7d860ef7cf4bc2cc6080d24f07
+  fingerprint: a3d0dca06c880bd38a3fb56fbd7e0e2d493ada7d860ef7cf4bc2cc6080d24f07
+  sha1: sha256:1d0b0982a11d1a5d7a11ef68d876f145be5e6f2724b40c5061fdf166a527ded0
+  packages: []
+packages:
+- name: cf-cli-6-linux
+  version: af6517f138b3ed0584b263f6273f30f22f6e5c9d
+  fingerprint: af6517f138b3ed0584b263f6273f30f22f6e5c9d
+  sha1: 49c68230bc07d100e34e8505d637e077c5dd68ed
+  dependencies: []
+- name: golang-1.10-linux
+  version: 84480dd6f6ab2d61546f28c05ed2705c9c642607
+  fingerprint: 84480dd6f6ab2d61546f28c05ed2705c9c642607
+  sha1: 491bd2416037957858a1e0450193f116285a6be7
+  dependencies: []
+- name: logservice
+  version: 5b86b992e2ac90c7e8bf625c8b095e9093014c9c1c7aad5c2a289524e9062b40
+  fingerprint: 5b86b992e2ac90c7e8bf625c8b095e9093014c9c1c7aad5c2a289524e9062b40
+  sha1: sha256:49ee10c4b0ecddd103146202b863a3c3899e03f8e84d409b68c47b567b5cb0db
+  dependencies:
+  - golang-1.10-linux
