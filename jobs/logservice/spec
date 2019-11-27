@@ -15,6 +15,12 @@ properties:
     default: 8088
   logservice.tls_port:
     default: 8089
+  logservice.external_url:
+    default: ""
+  logservice.disallow_logs_from_external:
+    default: false
+  logservice.disable_drain_type:
+    default: false
   logservice.prefer_tls:
     default: false
   logservice.syslog_addresses:

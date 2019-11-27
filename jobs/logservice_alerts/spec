@@ -8,15 +8,32 @@ templates:
 
 properties:
   logservice_alerts.duration.threshold_ms:
-    description: "Average forward duration too high threshold (ms)"
+    description: "Average parsing and forward duration too high threshold (ms)"
     default: 10
   logservice_alerts.duration.evaluation_time:
+    description: "Average parsing and forward duration too high evaluation time"
+    default: 5m
+
+  logservice_alerts.forward_duration.threshold_ms:
+    description: "Average forward duration too high threshold (ms)"
+    default: 5
+  logservice_alerts.forward_duration.evaluation_time:
     description: "Average forward duration too high evaluation time"
     default: 5m
 
-  logservice_alerts.error.threshold:
+  logservice_alerts.errors.threshold:
     description: "Forward drop rate too high threshold"
     default: 0
   logservice_alerts.errors.evaluation_time:
     description: "Forward drop rate too high evaluation time"
     default: 15m
+
+  logservice_alerts.cache.enable:
+    description: "Enable send without cache alert"
+    default: true
+  logservice_alerts.cache.threshold:
+    description: "Logs send without cache threshold"
+    default: 2
+  logservice_alerts.cache.evaluation_time:
+    description: "Logs send without cache too high evaluation time"
+    default: 10m

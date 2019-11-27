@@ -1,0 +1,3 @@
+- type: replace
+  path: /instance_groups/name=logservice/jobs/name=logservice/properties/logservice/disable_drain_type?
+  value: true

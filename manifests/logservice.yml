@@ -34,6 +34,7 @@ instance_groups:
                 name: loghost
                 company_id: apps@1368
                 description: Drain apps logs to loghost
+                default_drain_type: "" # can be logs (similar to empty), metrics or all
                 bullets:
                   - "Available create parameters:"
                   - "- s"

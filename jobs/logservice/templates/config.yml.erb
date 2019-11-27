@@ -4,6 +4,9 @@ services:
     credentials:
       port: <%= p('logservice.port') %>
       tls_port: <%= p('logservice.tls_port') %>
+      external_url: <%= if_p('logservice.external_url') do |item| %><%= item %><% end %>
+      disallow_logs_from_external: <%= p('logservice.external_url') %>
+      disable_drain_type: <%= p('logservice.disable_drain_type') %>
       prefer_tls: <%= p('logservice.prefer_tls') %>
       syslog_addresses: <%= p('logservice.syslog_addresses').to_json %>
       broker_username: "<%= p('logservice.broker.username') %>"

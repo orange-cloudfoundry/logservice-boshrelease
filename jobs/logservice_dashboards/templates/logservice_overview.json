@@ -232,7 +232,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "max(rate(logs_sent_errors_total[5m])) OR on() vector(0)",
+          "expr": "max(rate(logs_sent_errors_total[10m])) OR on() vector(0)",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -313,7 +313,7 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "sum(rate(logs_sent_total{instance=~\"$instance\"}[5m])) by (instance)",
+          "expr": "sum(rate(logs_sent_total{instance=~\"$instance\"}[10m])) by (instance)",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -323,8 +323,9 @@
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
-      "title": "Success Rate",
+      "title": "Success Rate (log/s in success)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -403,7 +404,7 @@
       "steppedLine": true,
       "targets": [
         {
-          "expr": "sum(rate(logs_sent_errors_total{instance=~\"$instance\"}[5m])) by (instance) or on() vector(0)",
+          "expr": "sum(rate(logs_sent_errors_total{instance=~\"$instance\"}[10m])) by (instance) or on() vector(0)",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -413,8 +414,9 @@
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
-      "title": "Error Rate",
+      "title": "Error Rate (log/s in error)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -549,6 +551,7 @@
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "Q.O.S.",
       "tooltip": {
@@ -608,12 +611,14 @@
         "y": 24
       },
       "heatmap": {},
+      "hideZeroBuckets": false,
       "highlightCards": true,
       "id": 30,
       "legend": {
         "show": false
       },
       "links": [],
+      "reverseYBuckets": false,
       "targets": [
         {
           "expr": "sum(rate(logs_sent_duration_bucket[10m])) by (le)",
@@ -693,7 +698,7 @@
       "strokeWidth": 1,
       "targets": [
         {
-          "expr": "sum(logs_sent_total) by (org, space)",
+          "expr": "sum(increase(logs_sent_total{}[$__range])) by (org, space)",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -738,7 +743,7 @@
       "strokeWidth": 1,
       "targets": [
         {
-          "expr": "sum(logs_sent_total) by (org)",
+          "expr": "sum(increase(logs_sent_total{}[$__range])) by (org)",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -768,6 +773,51 @@
         "x": 16,
         "y": 34
       },
+      "id": 28,
+      "interval": null,
+      "legend": {
+        "percentage": true,
+        "show": true,
+        "values": false
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": "2",
+      "targets": [
+        {
+          "expr": "sum(increase(logs_sent_total{}[$__range])) by (instance)",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Log per Instance",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "${DS_PROMETHEUS}",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 43
+      },
       "id": 7,
       "interval": null,
       "legend": {
@@ -783,7 +833,7 @@
       "strokeWidth": 1,
       "targets": [
         {
-          "expr": "sum(logs_sent_total) by (plan_name)",
+          "expr": "sum(increase(logs_sent_total{}[$__range])) by (plan_name)",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -804,54 +854,60 @@
         "label": "Others",
         "threshold": 0
       },
-      "datasource": "${DS_PROMETHEUS}",
+      "decimals": null,
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
+        "h": 9,
+        "w": 16,
+        "x": 8,
         "y": 43
       },
-      "id": 28,
+      "id": 32,
       "interval": null,
       "legend": {
+        "header": "",
         "percentage": true,
         "show": true,
-        "values": false
+        "values": true
       },
       "legendType": "Right side",
       "links": [],
       "maxDataPoints": 3,
       "nullPointMode": "connected",
       "pieType": "pie",
-      "strokeWidth": "2",
+      "strokeWidth": 1,
       "targets": [
         {
-          "expr": "sum(logs_sent_total) by (instance)",
+          "expr": "sum(increase(logs_sent_total{}[$__range])) by (app, org, app)",
           "format": "time_series",
-          "hide": false,
           "instant": false,
           "intervalFactor": 1,
-          "legendFormat": "{{instance}}",
+          "legendFormat": "{{org}} / {{space}} / {{app}}",
           "refId": "A"
         }
       ],
-      "title": "Log per Instance",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Log per App",
       "type": "grafana-piechart-panel",
       "valueName": "current"
     }
   ],
   "refresh": false,
-  "schemaVersion": 16,
+  "schemaVersion": 18,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
       {
         "allValue": null,
-        "current": {},
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": "${DS_PROMETHEUS}",
+        "definition": "",
         "hide": 0,
         "includeAll": true,
         "label": "Instance",
@@ -861,6 +917,7 @@
         "query": "label_values(logs_sent_total, instance)",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
         "tags": [],

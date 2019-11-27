@@ -17,3 +17,38 @@
 - type: replace
   path: /instance_groups/name=logservice/jobs/name=broker-registrar/properties/cf/password
   value: ((/((director_name))/cf/cf_admin_password))
+
+- type: replace
+  path: /releases/-
+  value:
+    name: routing
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/cf-routing-release?v=0.184.0
+    version: 0.184.0
+    sha1: f35eb9884e1c097ff21843e6f2d0eebd22ac2073
+
+- type: replace
+  path: /instance_groups/name=logservice/jobs/-
+  value:
+    name: route_registrar
+    release: routing
+    consumes:
+      nats:
+        from: nats
+        deployment: cf
+    properties:
+      route_registrar:
+        routes:
+          - name: logservice
+            registration_interval: 20s
+            server_cert_domain_san: "logservice.service.cf.internal"
+            tls_port: 8089
+            uris:
+              - logservice.((system_domain))
+
+- type: replace
+  path: /instance_groups/name=logservice/jobs/name=logservice/properties/logservice/external_url?
+  value: https://logservice.((system_domain))
+
+- type: replace
+  path: /instance_groups/name=logservice/jobs/name=logservice/properties/logservice/disallow_logs_from_external?
+  value: true

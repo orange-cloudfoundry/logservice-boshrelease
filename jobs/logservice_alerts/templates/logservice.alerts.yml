@@ -16,10 +16,10 @@ groups:
           severity: warning
         annotations:
           summary: "Logservice has high latency at instance `{{$labels.instance}}`"
-          description: "Average process time of logs is greater that `<%= p('logservice_alerts.duration.threshold_ms') %>` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.duration.evaluation_time') %>"
+          description: "Average process time of logs is greater than `<%= p('logservice_alerts.duration.threshold_ms') %>` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.duration.evaluation_time') %>"
 
       - alert: LogserviceDropRateTooHigh
-        expr: sum(rate(logs_sent_errors_total[10m])) by (instance) > <%= p('logservice_alerts.error.threshold') %>
+        expr: sum(rate(logs_sent_errors_total[10m])) by (instance) > <%= p('logservice_alerts.errors.threshold') %>
         for: <%= p('logservice_alerts.errors.evaluation_time') %>
         labels:
           service: logservice
@@ -43,3 +43,38 @@ groups:
             it's still a serious failure since produced logs are definitely lost.
 
             Please contact Cloud Foundry admin team
+
+      - record: job:logs_forward_duration_sum:increase10m
+        expr: increase(logs_forward_duration_sum[10m])
+      - record: job:logs_forward_duration_count:increase10m
+        expr: increase(logs_forward_duration_count[10m])
+      - alert: LogserviceForwardDurationTooHigh
+        expr: |
+          avg(
+            (job:logs_forward_duration_sum:increase10m / job:logs_forward_duration_count:increase10m) > 0
+          ) by (instance) * 1000 > <%= p('logservice_alerts.forward_duration.threshold_ms') %>
+        for: <%= p('logservice_alerts.forward_duration.evaluation_time') %>
+        labels:
+          service: logservice
+          severity: warning
+        annotations:
+          summary: "Logservice has high latency when forwarding logs on target at instance `{{$labels.instance}}`"
+          description: "Average time for forwarding logs to target is greater than `<%= p('logservice_alerts.forward_duration.threshold_ms') %>` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.forward_duration.evaluation_time') %>"
+
+<% if p('logservice_alerts.cache.enable') %>
+
+      - alert: LogserviceSendingLogsWithoutUsingCache
+        expr: (sum(increase(logs_sent_without_cache_total[5m])) by (org, space, app) or vector(0)) > <%= p('logservice_alerts.cache.threshold') %>
+        for: <%= p('logservice_alerts.cache.evaluation_time') %>
+        labels:
+          service: logservice
+          severity: critical
+        annotations:
+          summary: "Logservice reports that app `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}` is sending logs without using cache during the last <%= p('logservice_alerts.cache.evaluation_time') %>"
+          description: |
+            App `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}` is sending too much logs without using cache.
+            This must be an issue with logservice.
+
+            Please contact Cloud Foundry admin team
+
+<% end %>
