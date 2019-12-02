@@ -14,11 +14,11 @@ instance_groups:
           cf:
             api_url: https://api.((system_domain))
             username: admin
-            password: ((cf_admin_password))
+            password: ((/((director_name))/cf/cf_admin_password))
             skip_ssl_validation: true
           logservice:
             broker:
-              host: url-to-logservice.example.net
+              host: logservice.service.logservice.internal
               protocol: https
               port: 8089
               name: logs
@@ -52,13 +52,30 @@ instance_groups:
             broker:
               username: logservice-broker
               password: ((logservice-broker-password))
-            syslog_drain_url: url-to-logservice.example.net
+            syslog_drain_url: https://logservice.service.logservice.internal:8089
             skip_ssl_validation: false
             mysql:
               user: logservice
               password: ((logservice-mysql-password))
-              host: ((logservice-mysql-host))
+              host: database.service.cf.internal
               database: logservice
+            external_url: https://logservice.((system_domain))
+            disallow_logs_from_external: true
+      - name: route_registrar
+        release: routing
+        consumes:
+          nats:
+            from: nats
+            deployment: cf
+        properties:
+          route_registrar:
+            routes:
+              - name: logservice
+                registration_interval: 20s
+                server_cert_domain_san: "logservice.service.logservice.internal"
+                tls_port: 8089
+                uris:
+                  - logservice.((system_domain))
     vm_type: default
     stemcell: default
     networks:
@@ -69,8 +86,11 @@ variables:
     type: password
   - name: log_service_ssl
     options:
+      ca: /((director_name))/cf/service_cf_internal_ca
       alternative_names:
-        - url-to-logservice.example.net
+        # backward compatibility, to remove on next release
+        - logservice.service.cf.internal
+        - logservice.service.logservice.internal
       common_name: logserviceSSL
     type: certificate
 
@@ -94,4 +114,6 @@ releases:
     url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.11/logservice-1.11.tgz
     sha1: 611d5f107411ddd2ed37ee5b8a5a8b9cd6102b2c
   - name: bpm
+    version: latest
+  - name: routing
     version: latest
