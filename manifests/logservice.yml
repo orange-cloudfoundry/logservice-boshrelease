@@ -18,7 +18,7 @@ instance_groups:
             skip_ssl_validation: true
           logservice:
             broker:
-              host: logservice.service.logservice.internal
+              host: logservice.service.cf.internal
               protocol: https
               port: 8089
               name: logs
@@ -52,7 +52,7 @@ instance_groups:
             broker:
               username: logservice-broker
               password: ((logservice-broker-password))
-            syslog_drain_url: https://logservice.service.logservice.internal:8089
+            syslog_drain_url: https://logservice.service.cf.internal:8089
             skip_ssl_validation: false
             mysql:
               user: logservice
@@ -72,7 +72,7 @@ instance_groups:
             routes:
               - name: logservice
                 registration_interval: 20s
-                server_cert_domain_san: "logservice.service.logservice.internal"
+                server_cert_domain_san: "logservice.service.cf.internal"
                 tls_port: 8089
                 uris:
                   - logservice.((system_domain))
