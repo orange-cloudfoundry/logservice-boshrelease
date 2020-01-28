@@ -1,15 +1,4 @@
 - type: replace
-  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/-
-  value:
-    domain: logservice.service.cf.internal
-    targets:
-      - deployment: logservice
-        domain: bosh
-        instance_group: logservice
-        network: default
-        query: '*'
-
-- type: replace
   path: /instance_groups/name=adapter/jobs/name=ca_certs?/release
   value: os-conf
 
