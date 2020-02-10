@@ -75,6 +75,8 @@ builds:
     version: "1.7"
   e682daf3-1b87-4667-77a8-5e36112c9691:
     version: 1.13.2
+  e70bd9a9-697a-46fb-64a7-fe597fbb0eec:
+    version: 1.15.3
   e921d9b3-9aa2-48cf-573a-fbd80a368ccb:
     version: 1.13.7
   f2101298-7aac-4aa1-78b5-c812ce1570fb:
