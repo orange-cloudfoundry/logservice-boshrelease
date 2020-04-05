@@ -2,7 +2,7 @@
 name: logservice
 
 dependencies:
-  - golang-1.10-linux
+  - golang-1-linux
 
 files:
   - logs-service-broker/**
