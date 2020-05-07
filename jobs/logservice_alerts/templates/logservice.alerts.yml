@@ -16,17 +16,17 @@ groups:
           severity: warning
         annotations:
           summary: "Logservice has high latency at instance `{{$labels.instance}}`"
-          description: "Average process time of logs is greater than `<%= p('logservice_alerts.duration.threshold_ms') %>` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.duration.evaluation_time') %>"
+          description: "Average process time of logs is greater than `<%= p('logservice_alerts.duration.threshold_ms') %>ms` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.duration.evaluation_time') %>"
 
       - alert: LogserviceDropRateTooHigh
-        expr: sum(rate(logs_sent_errors_total[10m])) by (instance) > <%= p('logservice_alerts.errors.threshold') %>
+        expr: sum(rate(logs_sent_errors_total[10m])) by (instance, org, space, app) > <%= p('logservice_alerts.errors.threshold') %>
         for: <%= p('logservice_alerts.errors.evaluation_time') %>
         labels:
           service: logservice
           severity: critical
         annotations:
-          summary: "Logservice is dropping some logs at instance `{{$labels.instance}}`"
-          description: "Logservice is droping more than `<%= p('logservice_alerts.errors.threshold') %>` logs/s at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
+          summary: "Logservice is dropping some logs at instance `{{$labels.instance}}` for app at `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}`"
+          description: "Logservice is droping more than `<%= p('logservice_alerts.errors.threshold') %>` logs/s at instance `{{$labels.instance}}` for app at `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
 
       - alert: LogserviceNoLogs
         expr: (sum(increase(logs_sent_total[15m])) or vector(0)) == 0
@@ -59,7 +59,7 @@ groups:
           severity: warning
         annotations:
           summary: "Logservice has high latency when forwarding logs on target at instance `{{$labels.instance}}`"
-          description: "Average time for forwarding logs to target is greater than `<%= p('logservice_alerts.forward_duration.threshold_ms') %>` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.forward_duration.evaluation_time') %>"
+          description: "Average time for forwarding logs to target is greater than `<%= p('logservice_alerts.forward_duration.threshold_ms') %>ms` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.forward_duration.evaluation_time') %>"
 
 <% if p('logservice_alerts.cache.enable') %>
 
