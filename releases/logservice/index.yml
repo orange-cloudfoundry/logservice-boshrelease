@@ -61,6 +61,8 @@ builds:
     version: 1.13.17
   a6c6bd16-5018-4ddf-4c07-3ad2ad75f4cb:
     version: "1.13"
+  b3e10b44-2215-4501-5ef1-d03a06459ae8:
+    version: 1.15.9
   b9c3d237-08b0-409e-42d7-c2cfbe6e9b60:
     version: 1.15.2
   ba201f14-f225-4ff0-69fa-0b6404615c2b:
