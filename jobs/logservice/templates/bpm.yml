@@ -1,8 +1,10 @@
 processes:
-- name: logservice
-  executable: /var/vcap/packages/logservice/bin/logs-service-broker
-  args: []
-  env:
-    CLOUD_FILE: /var/vcap/jobs/logservice/config/config.yml
-  capabilities:
-  - NET_BIND_SERVICE
+  - name: logservice
+    executable: /var/vcap/packages/logservice/bin/logs-service-broker
+    args: []
+    env:
+      CLOUD_FILE: /var/vcap/jobs/logservice/config/config.yml
+    limits:
+      open_files: 16384
+    capabilities:
+      - NET_BIND_SERVICE
