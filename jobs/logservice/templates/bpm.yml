@@ -5,6 +5,6 @@ processes:
     env:
       CLOUD_FILE: /var/vcap/jobs/logservice/config/config.yml
     limits:
-      open_files: 16384
+      open_files: 100000
     capabilities:
       - NET_BIND_SERVICE
