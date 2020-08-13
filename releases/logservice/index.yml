@@ -65,6 +65,8 @@ builds:
     version: 1.15.11
   9ec7244a-c871-435e-7b4c-196fdaa9f8c0:
     version: 1.13.17
+  9fcb8101-5b97-4d1d-6989-8517a393b9db:
+    version: 1.15.13
   a6c6bd16-5018-4ddf-4c07-3ad2ad75f4cb:
     version: "1.13"
   b3e10b44-2215-4501-5ef1-d03a06459ae8:
