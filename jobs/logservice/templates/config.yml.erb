@@ -1,39 +1,77 @@
-services:
-  - name: my-config
-    tags: [ "config" ]
-    credentials:
-      port: <%= p('logservice.port') %>
-      tls_port: <%= p('logservice.tls_port') %>
-      external_url: <% if_p('logservice.external_url') do |item| %><%= item %><% end %>
-      disallow_logs_from_external: <%= p('logservice.disallow_logs_from_external') %>
-      disable_drain_type: <%= p('logservice.disable_drain_type') %>
-      prefer_tls: <%= p('logservice.prefer_tls') %>
-      syslog_addresses: <%= p('logservice.syslog_addresses').to_json %>
-      broker_username: "<%= p('logservice.broker.username') %>"
-      broker_password: "<%= p('logservice.broker.password') %>"
-      syslog_drain_url: "<%= p('logservice.syslog_drain_url') %>"
-      skip_ssl_validation: <%= p('logservice.skip_ssl_validation').to_json %>
-      log_level: "<%= p('logservice.log_level') %>"
-      cache_duration: "<%= p('logservice.cache_duration') %>"
-      log_no_color: true
-      log_json: true
-      virtual_host: false
-      sql_cnx_max_open: <%= p('logservice.mysql.cnx.max_open') %>
-      sql_cnx_max_idle: <%= p('logservice.mysql.cnx.max_idle') %>
-      sql_cnx_max_life: <%= p('logservice.mysql.cnx.max_life') %>
-      parsing_keys: <%= p('logservice.parsing_keys').to_json %>
-<% if_p('logservice.ssl_cert') do %>
-<% if_p('logservice.ssl_key') do %>
-      ssl_cert_file: /var/vcap/jobs/logservice/config/ssl_cert.pem
-      ssl_key_file:  /var/vcap/jobs/logservice/config/ssl_key.pem
-<% end %>
-<% end %>
-  - name: mysql
-    credentials:
-      user: "<%= p('logservice.mysql.user') %>"
-      password: "<%= p('logservice.mysql.password') %>"
-      host: "<%= p('logservice.mysql.host') %>"
-      port: "<%= p('logservice.mysql.port') %>"
-      database: "<%= p('logservice.mysql.database') %>"
-      options: "<%= p('logservice.mysql.options') %>"
+<%
+require 'yaml'
 
+credentials = {
+  "log" => {
+    "level"           => p('logservice.log.level'),
+    "json"            => true,
+    "no_color"        => true,
+    "enable_profiler" => false,
+  },
+  "web" => {
+    "port" => p('logservice.web.port'),
+    "tls" => {
+      "port"      => p('logservice.web.tls.port'),
+      "cert_file" => "",
+      "key_file"  => "",
+    },
+    "max_keep_alive" => {
+      "disabled"  => p('logservice.web.max_keep_alive.disabled'),
+      "duration"  => p('logservice.web.max_keep_alive.duration'),
+      "fuzziness" => p('logservice.web.max_keep_alive.fuzziness'),
+    },
+  },
+  "broker" => {
+    "public_host"            => p('logservice.broker.public_host'),
+    "drain_host"             => p('logservice.broker.drain_host'),
+    "username"               => p('logservice.broker.username'),
+    "password"               => p('logservice.broker.password'),
+    "force_empty_drain_type" => p('logservice.broker.force_empty_drain_type'),
+    "virtual_host"           => false,
+  },
+  "forwarder" => {
+    "allowed_hosts"  => p('logservice.forwarder.allowed_hosts'),
+    "parsing_keys"   => p('logservice.forwarder.parsing_keys'),
+  },
+  "binding_cache" => {
+    "duration" => p('logservice.binding_cache.duration'),
+  },
+  "db" => {
+    "sqlite_fallback"      => false,
+    "cnx_max_open"         => p('logservice.db.cnx.max_open'),
+    "cnx_max_idle"         => p('logservice.db.cnx.max_idle'),
+    "cnx_max_life"         => p('logservice.db.cnx.max_life'),
+  },
+  "syslog_addresses" => p('logservice.syslog_addresses')
+}
+
+if_p('logservice.web.tls.cert') do |val|
+  credentials["web"]["tls"]["cert_file"] = "/var/vcap/jobs/logservice/config/ssl_cert.pem"
+  credentials["web"]["tls"]["key_file"]  = "/var/vcap/jobs/logservice/config/ssl_key.pem"
+end
+
+config = {
+  "services" => [
+    {
+      "name" => "my-config",
+      "tags" => [ "config" ],
+      "credentials" => credentials
+    },
+    {
+      "name"         => "mysql",
+      "credentials"  => {
+        "user"     => p('logservice.db.user'),
+        "password" => p('logservice.db.password'),
+        "host"     => p('logservice.db.host'),
+        "port"     => p('logservice.db.port'),
+        "database" => p('logservice.db.database'),
+        "options"  => p('logservice.db.options'),
+      }
+    }
+  ]
+}
+%>
+
+# run with following command:
+# CLOUD_FILE=/var/vcap/jobs/logservice/config/config.yml /var/vcap/packages/logservice/bin/logs-service-broker
+<%= config.to_yaml %>

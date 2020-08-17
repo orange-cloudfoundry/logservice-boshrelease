@@ -1,10 +1,17 @@
+<%
+port = p('logservice.web.port')
+if_p('logservice.web.tls.port', 'logservice.web.tls.cert', 'logservice.web.tls.key') do
+  port = p('logservice.web.tls.port')
+end
+%>
+
 check process logservice
   with pidfile   /var/vcap/sys/run/bpm/logservice/logservice.pid
   start program "/var/vcap/jobs/bpm/bin/bpm start logservice"
   stop program  "/var/vcap/jobs/bpm/bin/bpm stop  logservice"
   group vcap
   if failed
-    port 8089
+    port <%= port %>
     type tcp
     timeout 30 seconds
   for 2 cycles
