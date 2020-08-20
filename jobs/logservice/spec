@@ -11,52 +11,63 @@ packages:
   - logservice
 
 properties:
-  logservice.port:
+  logservice.log.level:
+    description: |
+      log level to use for server
+      you can chose: `trace`, `debug`, `info`, `warn`, `error`, `fatal` or `panic`
+    default: "info"
+
+  logservice.web.port:
     default: 8088
     description: Port for listening in http
-  logservice.tls_port:
+
+  logservice.web.tls.port:
     default: 8089
     description: |
       Port for listening in https
       This will be in addition of listening in http
       You will need to set ssl_cert_file and ssl_key_file parameters in addition
-  logservice.external_url:
+  logservice.web.tls.cert:
+    description: "content of an ssl cert in pem format"
+  logservice.web.tls.key:
+    description: "content of an ssl private key in pem format"
+
+  logservice.web.max_keep_alive.disabled:
+    decription: "set true to disable max keep alive"
+    default: false
+  logservice.web.max_keep_alive.duration:
+    decription: "close persistent connection after given duration"
+    default: 4m
+  logservice.web.max_keep_alive.fuzziness:
+    decription: "consider given fraction of duration when computing connection life span"
+    default: 1m
+
+  logservice.db.user:
+    description: "mysql user to connect to"
+  logservice.db.password:
+    description: "mysql password to connect to"
+  logservice.db.host:
+    description: "mysql url to connect to"
+    default: "database.service.cf.internal"
+  logservice.db.database:
+    description: "mysql database name to connect to"
+  logservice.db.port:
+    description: "mysql port to connect to"
+    default: 3306
+  logservice.db.options:
+    description: "additional mysql options for connection"
     default: ""
-    description: |
-      External url which give docs url to user
-      This is an url pointing on this service of course
-      using it let you separate logs part from user part
-  logservice.disallow_logs_from_external:
-    default: false
-    description: |
-      Set to true to not allow to send logs to external url
-      If you want clear separation between user and logs path set it to true
-  logservice.disable_drain_type:
-    default: false
-    description: |
-      By default user can chose what kind of data to retrieve between `logs`, `metrics` or `all` when creating service
-      This will disallow what kind of data user can ask.
-  logservice.prefer_tls:
-    default: false
-    description: |
-      If set to true, forged url for syslog drain endpoint in broker will always use https url
-      This will not let user be able to chose to forward in http or https
-  logservice.syslog_addresses:
-    description: see configuration on https://github.com/orange-cloudfoundry/logs-service-broker#syslog_addresse-configuration
-  logservice.broker.username:
-    description: Broker username basic auth
-  logservice.broker.password:
-    description: Broker password basic auth
-  logservice.syslog_drain_url:
-    description: |
-      this is url used to forge url on syslog drain endpoint
-      this is an url pointing on this service of course
-      e.g.: my-logservice.com
-      note: you don't need to set scheme as http or https like it is dependant of parameter `prefer_tls` or user directive
-  logservice.skip_ssl_validation:
-    description: "not used"
-    default: false
-  logservice.cache_duration:
+  logservice.db.cnx.max_open:
+    description: "Set the maximum number of open connections to the database"
+    default: 100
+  logservice.db.cnx.max_idle:
+    description: "Set the maximum number of connections in the idle"
+    default: 100
+  logservice.db.cnx.max_life:
+    description: "Set the maximum amount of time a connection may be reused. this is a duration which must be write like: `1h` for one hour or `1d` for one day ..."
+    default: "1h"
+
+  logservice.binding_cache.duration:
     description: |
       In order to avoid a lot of request to the database when forwarding logs a cache system is provided
       We recommend to set this value and set it to `always`
@@ -64,39 +75,25 @@ properties:
       Or this can be set to `always` to keep in cache all requested data indefinitely until data still exists
       in db to avoid too much memory usage (check is performed each 24h if set to always)
     default: "always"
-  logservice.mysql.user:
-    description: "mysql user to connect to"
-  logservice.mysql.password:
-    description: "mysql password to connect to"
-  logservice.mysql.host:
-    description: "mysql url to connect to"
-    default: "database.service.cf.internal"
-  logservice.mysql.database:
-    description: "mysql database name to connect to"
-  logservice.mysql.port:
-    description: "mysql port to connect to"
-    default: 3306
-  logservice.mysql.options:
-    description: "additional mysql options for connection"
-    default: ""
-  logservice.mysql.cnx.max_open:
-    description: "Set the maximum number of open connections to the database"
-    default: "100"
-  logservice.mysql.cnx.max_idle:
-    description: "Set the maximum number of connections in the idle"
-    default: "100"
-  logservice.mysql.cnx.max_life:
-    description: "Set the maximum amount of time a connection may be reused. this is a duration which must be write like: `1h` for one hour or `1d` for one day ..."
-    default: "1h"
-  logservice.log_level:
-    description: |
-      log level to use for server
-      you can chose: `trace`, `debug`, `info`, `warn`, `error`, `fatal` or `panic`
-    default: "info"
-  logservice.ssl_cert:
-    description: "content of an ssl cert in pem format"
-  logservice.ssl_key:
-    description: "content of an ssl private key in pem format"
-  logservice.parsing_keys:
-    description: "see configuration on https://github.com/orange-cloudfoundry/logs-service-broker#parsing_key-configuration"
+
+  logservice.broker.username:
+    description: Broker username basic auth
+  logservice.broker.password:
+    description: Broker password basic auth
+  logservice.broker.public_host:
+    description: "Hostname used in borkers' documentation and dashboards"
+  logservice.broker.drain_host:
+    description: "Hostname used to generate broker's syslog_drain url"
+  logservice.broker.force_empty_drain_type:
+    description: set to true to force empty `drain_type` field regardless of what was requested by user
+    default: true
+
+  logservice.forwarder.parsing_keys:
+    description: "See configuration on https://github.com/orange-cloudfoundry/logs-service-broker#parsing_key-configuration"
     default: []
+  logservice.forwarder.allowed_hosts:
+    description: "List of allowed host, incomming requests for any other hosts will be rejected. empty to allow from all"
+    default: []
+
+  logservice.syslog_addresses:
+    description: see configuration on https://github.com/orange-cloudfoundry/logs-service-broker#syslog_addresse-configuration

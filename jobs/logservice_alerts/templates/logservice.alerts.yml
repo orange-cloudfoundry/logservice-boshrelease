@@ -17,7 +17,6 @@ groups:
         annotations:
           summary: "Logservice has high latency at instance `{{$labels.instance}}`"
           description: "Average process time of logs is greater than `<%= p('logservice_alerts.duration.threshold_ms') %>ms` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.duration.evaluation_time') %>"
-
       - alert: LogserviceDropRateTooHigh
         expr: sum(rate(logs_sent_errors_total[10m])) by (instance, org, space, app) > <%= p('logservice_alerts.errors.threshold') %>
         for: <%= p('logservice_alerts.errors.evaluation_time') %>
@@ -27,7 +26,6 @@ groups:
         annotations:
           summary: "Logservice is dropping some logs at instance `{{$labels.instance}}` for app at `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}`"
           description: "Logservice is droping more than `<%= p('logservice_alerts.errors.threshold') %>` logs/s at instance `{{$labels.instance}}` for app at `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
-
       - alert: LogserviceNoLogs
         expr: (sum(increase(logs_sent_total[15m])) or vector(0)) == 0
         for: <%= p('logservice_alerts.errors.evaluation_time') %>
@@ -43,26 +41,22 @@ groups:
             it's still a serious failure since produced logs are definitely lost.
 
             Please contact Cloud Foundry admin team
-
-      - record: job:logs_forward_duration_sum:increase10m
-        expr: increase(logs_forward_duration_sum[10m])
-      - record: job:logs_forward_duration_count:increase10m
-        expr: increase(logs_forward_duration_count[10m])
-      - alert: LogserviceForwardDurationTooHigh
-        expr: |
-          avg(
-            (job:logs_forward_duration_sum:increase10m / job:logs_forward_duration_count:increase10m) > 0
-          ) by (instance) * 1000 > <%= p('logservice_alerts.forward_duration.threshold_ms') %>
-        for: <%= p('logservice_alerts.forward_duration.evaluation_time') %>
+      - alert: LogserviceDBFailure
+        expr: logs_db_status != 1
+        for: 5m
         labels:
           service: logservice
-          severity: warning
+          severity: critical
         annotations:
-          summary: "Logservice has high latency when forwarding logs on target at instance `{{$labels.instance}}`"
-          description: "Average time for forwarding logs to target is greater than `<%= p('logservice_alerts.forward_duration.threshold_ms') %>ms` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.forward_duration.evaluation_time') %>"
+          summary: "Logservice reports communication failure with database"
+          description: |
+            Database could not be reached for more than 5m
+
+            This is a serious failure since produced logs are definitely lost.
+
+            Please contact Cloud Foundry admin team
 
 <% if p('logservice_alerts.cache.enable') %>
-
       - alert: LogserviceSendingLogsWithoutUsingCache
         expr: (sum(increase(logs_sent_without_cache_total[5m])) by (org, space, app) or vector(0)) > <%= p('logservice_alerts.cache.threshold') %>
         for: <%= p('logservice_alerts.cache.evaluation_time') %>
@@ -76,5 +70,4 @@ groups:
             This must be an issue with logservice.
 
             Please contact Cloud Foundry admin team
-
 <% end %>

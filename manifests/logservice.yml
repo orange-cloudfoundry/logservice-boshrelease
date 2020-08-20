@@ -47,20 +47,24 @@ instance_groups:
                   env: "{{if hasSuffix .Org \"-staging\" }}dev{{ else }}prod{{ end }}"
                   audience: "mycompagny"
                   fmt: "json"
-            ssl_cert: ((log_service_ssl.certificate))
-            ssl_key: ((log_service_ssl.private_key))
+            web:
+              tls:
+                cert: ((log_service_ssl.certificate))
+                key: ((log_service_ssl.private_key))
             broker:
+              public_host: logservice.((system_domain))
+              drain_host: logservice.service.cf.internal
               username: logservice-broker
               password: ((logservice-broker-password))
-            syslog_drain_url: https://logservice.service.cf.internal:8089
-            skip_ssl_validation: false
-            mysql:
+            db:
               user: logservice
               password: ((logservice-mysql-password))
               host: database.service.cf.internal
               database: logservice
-            external_url: https://logservice.((system_domain))
-            disallow_logs_from_external: true
+            forwarder:
+              allowed_hosts:
+                - logservice.service.cf.internal
+
       - name: route_registrar
         release: routing
         consumes:
@@ -106,13 +110,12 @@ stemcells:
     os: ubuntu-xenial
     version: latest
 
-manifest_version: v1.5
+manifest_version: v2.0.0
 
 releases:
   - name: logservice
-    version: "1.11"
-    url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v1.11/logservice-1.11.tgz
-    sha1: 611d5f107411ddd2ed37ee5b8a5a8b9cd6102b2c
+    version: 2.2.0
+    url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v2.0.0/logservice-2.0.0.tgz
   - name: bpm
     version: latest
   - name: routing
