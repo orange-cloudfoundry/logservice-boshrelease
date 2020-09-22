@@ -1,3 +1,0 @@
-- type: replace
-  path: /addons/name=loggr-syslog-agent/jobs/name=loggr-syslog-agent/properties/drain_ca_cert?
-  value: ((cc_tls.ca))
