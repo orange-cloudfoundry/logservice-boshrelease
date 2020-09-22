@@ -8,23 +8,6 @@ instance_groups:
     jobs:
       - name: bpm
         release: bpm
-      - name: broker-registrar
-        release: logservice
-        properties:
-          cf:
-            api_url: https://api.((system_domain))
-            username: admin
-            password: ((/((director_name))/cf/cf_admin_password))
-            skip_ssl_validation: true
-          logservice:
-            broker:
-              host: logservice.service.cf.internal
-              protocol: https
-              port: 8089
-              name: logs
-              username: logservice-broker
-              password: ((logservice-broker-password))
-              public_plans: [loghost]
       - name: logservice
         release: logservice
         properties:
