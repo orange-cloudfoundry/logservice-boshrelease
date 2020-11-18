@@ -76,6 +76,11 @@ properties:
       in db to avoid too much memory usage (check is performed each 24h if set to always)
     default: "always"
 
+  logservice.binding_cache.pre_cache:
+    description: |
+      if pre_cache set to true, all binding with latest revision will be preloaded in cacher at initialization
+    default: true
+
   logservice.broker.username:
     description: Broker username basic auth
   logservice.broker.password:
