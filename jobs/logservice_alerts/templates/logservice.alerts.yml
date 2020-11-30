@@ -27,15 +27,15 @@ groups:
           summary: "Logservice is dropping some logs at instance `{{$labels.instance}}` for app at `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}`"
           description: "Logservice is droping more than `<%= p('logservice_alerts.errors.threshold') %>` logs/s at instance `{{$labels.instance}}` for app at `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
       - alert: LogserviceNoLogs
-        expr: (sum(increase(logs_sent_total[15m])) or vector(0)) == 0
-        for: <%= p('logservice_alerts.errors.evaluation_time') %>
+        expr: (sum(increase(logs_sent_total[<%= p('logservice_alerts.nologs.span_time') %>])) or vector(0)) == 0
+        for: <%= p('logservice_alerts.nologs.evaluation_time') %>
         labels:
           service: logservice
           severity: critical
         annotations:
-          summary: "Logservice reports no forwarded logs for the past 15 minutes"
+          summary: "Logservice reports no forwarded logs for the past <%= p('logservice_alerts.nologs.evaluation_time') %> minutes"
           description: |
-            No logs were forwarded by logservice in the last 15 minutes
+            No logs were forwarded by logservice in the last <%= p('logservice_alerts.nologs.evaluation_time') %> minutes
 
             This should not impact customers because applications are not affected but
             it's still a serious failure since produced logs are definitely lost.

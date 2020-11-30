@@ -28,6 +28,14 @@ properties:
     description: "Forward drop rate too high evaluation time"
     default: 15m
 
+  logservice_alerts.nologs.evaluation_time:
+    description: "NoLogs alert evaluation time"
+    default: 5m
+
+  logservice_alerts.nologs.span_time:
+    description: "NoLogs trigger when 0 logs where received in the given interval"
+    default: 5m
+
   logservice_alerts.cache.enable:
     description: "Enable send without cache alert"
     default: true
