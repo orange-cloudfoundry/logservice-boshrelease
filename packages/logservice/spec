@@ -1,8 +1,7 @@
 ---
 name: logservice
 
-dependencies:
-  - golang-1-linux
+dependencies: []
 
 files:
-  - logs-service-broker/**
+  - logs-service-broker_linux.tar.gz

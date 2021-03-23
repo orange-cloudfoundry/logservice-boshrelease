@@ -1,17 +1,9 @@
-set -e
+#!/bin/bash -e
 
 ostype=$(uname  | tr '[:upper:]' '[:lower:]')
-if [ -z "$BOSH_PACKAGES_DIR" ]; then
-    pkg_dir=$(readlink -nf /var/vcap/packages/golang-1-${ostype})
-else
-  pkg_dir=$BOSH_PACKAGES_DIR/golang-1-${ostype}
-fi
-
-source ${pkg_dir}/bosh/compile.env
-mkdir -p ${GOPATH}/src/github.com/orange-cloudfoundry/
-cp -r logs-service-broker ${GOPATH}/src/github.com/orange-cloudfoundry/
+bin_name="logs-service-broker"
+tar_name="${bin_name}_${ostype}.tar.gz"
 
 mkdir -p ${BOSH_INSTALL_TARGET}/bin
-
-cd ${GOPATH}/src/github.com/orange-cloudfoundry/logs-service-broker
-go build -o ${BOSH_INSTALL_TARGET}/bin/logs-service-broker
+tar zxf ${tar_name} --strip 1 -C ${BOSH_INSTALL_TARGET}
+mv ${BOSH_INSTALL_TARGET}/${bin_name} ${BOSH_INSTALL_TARGET}/bin
