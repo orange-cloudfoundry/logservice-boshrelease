@@ -30,8 +30,9 @@ credentials = {
     "virtual_host"           => false,
   },
   "forwarder" => {
-    "allowed_hosts"  => p('logservice.forwarder.allowed_hosts'),
-    "parsing_keys"   => p('logservice.forwarder.parsing_keys'),
+    "allowed_hosts"               => p('logservice.forwarder.allowed_hosts'),
+    "parsing_keys"                => p('logservice.forwarder.parsing_keys'),
+    "ignore_tags_structured_data" => p('logservice.forwarder.ignore_tags_structured_data'),
   },
   "binding_cache" => {
     "duration" => p('logservice.binding_cache.duration'),

@@ -99,6 +99,10 @@ properties:
   logservice.forwarder.allowed_hosts:
     description: "List of allowed host, incomming requests for any other hosts will be rejected. empty to allow from all"
     default: []
+  logservice.forwarder.ignore_tags_structured_data:
+    description: "Set to true to ignore tags data structure from cloud foundry"
+    default: false
+
 
   logservice.syslog_addresses:
     description: see configuration on https://github.com/orange-cloudfoundry/logs-service-broker#syslog_addresse-configuration
