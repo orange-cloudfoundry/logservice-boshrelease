@@ -72,12 +72,14 @@ variables:
   - name: logservice-broker-password
     type: password
   - name: log_service_ssl
+    update_mode: converge
     options:
       ca: /((director_name))/cf/service_cf_internal_ca
       alternative_names:
         # backward compatibility, to remove on next release
         - logservice.service.cf.internal
         - logservice.service.logservice.internal
+        - logserviceSSL
       common_name: logserviceSSL
     type: certificate
 
