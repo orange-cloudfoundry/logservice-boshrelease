@@ -9,6 +9,20 @@
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
         "type": "dashboard"
+      },
+      {
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgb(0, 211, 255, 1)",
+        "limit": 100,
+        "matchAny": true,
+        "name": "global annotations",
+        "showIn": 0,
+        "tags": [
+          "$empty"
+        ],
+        "type": "tags"
       }
     ]
   },
@@ -1563,6 +1577,27 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "error": null,
+        "hide": 2,
+        "label": "empty tag",
+        "name": "empty",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "constant"
       }
     ]
   },
