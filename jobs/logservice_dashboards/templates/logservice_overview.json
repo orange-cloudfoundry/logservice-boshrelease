@@ -20,7 +20,7 @@
         "name": "global annotations",
         "showIn": 0,
         "tags": [
-          "$empty"
+          "statusetat"
         ],
         "type": "tags"
       }
@@ -1577,27 +1577,6 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
-      },
-      {
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
-        },
-        "error": null,
-        "hide": 2,
-        "label": "empty tag",
-        "name": "empty",
-        "options": [
-          {
-            "selected": true,
-            "text": "",
-            "value": ""
-          }
-        ],
-        "query": "",
-        "skipUrlSync": false,
-        "type": "constant"
       }
     ]
   },
