@@ -31,7 +31,6 @@ properties:
   logservice_alerts.nologs.evaluation_time:
     description: "NoLogs alert evaluation time"
     default: 5m
-
   logservice_alerts.nologs.span_time:
     description: "NoLogs trigger when 0 logs where received in the given interval"
     default: 5m
@@ -45,3 +44,16 @@ properties:
   logservice_alerts.cache.evaluation_time:
     description: "Logs send without cache too high evaluation time"
     default: 10m
+
+  logservice_alerts.capacity.instance_max_rate:
+    description: "Maximum number of log-per-second that an instance can handle"
+    default: 3333
+  logservice_alerts.capacity.rolling_instance:
+    description: "Number of unavailable instances during update"
+    default: 1
+  logservice_alerts.capacity.redundancy_factor:
+    description: "Percent of additional log-per-second that must be reserved in case of loss of a redundant cluster"
+    default: 50
+  logservice_alerts.capacity.threshold:
+    description: "Minimum remaining of log-per-second before triggering the alert"
+    default: 0

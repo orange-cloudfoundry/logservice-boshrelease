@@ -5,6 +5,48 @@ groups:
         expr: increase(logs_sent_duration_sum[10m])
       - record: job:logs_sent_duration_count:increase10m
         expr: increase(logs_sent_duration_count[10m])
+
+      - record: logs_capacity:rate_instance
+        expr: sum(rate(logs_sent_total[5m])) by (instance)
+      - record: logs_capacity:rate
+        expr: sum(logs_capacity:rate_instance)
+      - record: logs_capacity:rate_max24h
+        expr: max_over_time(logs_capacity:rate[24h])
+      - record: logs_capacity:instance_count
+        expr: count(logs_capacity:rate_instance)
+      - record: logs_capacity:rate_max
+        expr: |
+          (logs_capacity:instance_count - <%= p('logservice_alerts.capacity.rolling_instance') %>)
+          *
+          <%= p('logservice_alerts.capacity.instance_max_rate') %>
+      - record: logs_capacity:redundancy_factor
+        expr: <%= p('logservice_alerts.capacity.redundancy_factor') %> / 100
+      - record: logs_capacity:threshold
+        expr: <%= p('logservice_alerts.capacity.threshold') %>
+      - record: logs_capacity:rate_remaining
+        expr: |
+          logs_capacity:rate_max
+          -
+          (logs_capacity:rate_max24h * (1 + logs_capacity:redundancy_factor))
+      - alert: LogserviceCapacityTooLow
+        expr: logs_capacity:rate_remaining < logs_capacity:threshold
+        for: 5m
+        labels:
+          service: logservice
+          severity: warning
+        annotations:
+          summary: "Logservice doesn't have enough instances to process logs safely"
+          description: |
+            Logservice needs scale-up. It has not enough instances to process all logs while
+            undergoing simultaneously a cluster failure and a rolling update.
+
+            Impact:
+            - chances of loosing application logs in case of cluster failure or maintenance
+
+            Resolution:
+            - contact administrator to scale up the component
+
+
       - alert: LogserviceDurationTooHigh
         expr: |
           avg(
@@ -71,3 +113,7 @@ groups:
 
             Please contact Cloud Foundry admin team
 <% end %>
+
+# Local Variables:
+# ispell-local-dictionary: "american"
+# End:
