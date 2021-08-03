@@ -100,8 +100,8 @@ manifest_version: v2.0.0
 
 releases:
   - name: logservice
-    version: 2.2.0
-    url: https://github.com/orange-cloudfoundry/logservice-release/releases/download/v2.0.0/logservice-2.0.0.tgz
+    version: ((logservice.version))
+    url: https://github.com/orange-cloudfoundry/logservice-boshrelease/releases/download/v((logservice.version))/logservice-((logservice.version)).tgz
   - name: bpm
     version: latest
   - name: routing
