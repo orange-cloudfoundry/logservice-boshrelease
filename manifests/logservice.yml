@@ -80,6 +80,7 @@ variables:
         - logservice.service.cf.internal
         - logservice.service.logservice.internal
         - logserviceSSL
+        - "*.logservice.data-plane.logservice.bosh"
       common_name: logserviceSSL
     type: certificate
 
