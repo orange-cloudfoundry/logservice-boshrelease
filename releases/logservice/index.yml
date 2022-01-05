@@ -107,6 +107,8 @@ builds:
     version: 1.15.13
   a095c30f-2abb-41fb-7445-65b6b77ba54f:
     version: 2.0.3
+  a2a4d492-5cec-45cb-74c7-2f413196eeeb:
+    version: 2.4.0
   a6c6bd16-5018-4ddf-4c07-3ad2ad75f4cb:
     version: "1.13"
   a84c56cd-3893-49d2-6874-5cc3c34cf3e6:
