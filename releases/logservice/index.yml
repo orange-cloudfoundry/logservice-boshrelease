@@ -71,6 +71,8 @@ builds:
     version: 2.0.14
   5f70b61b-e941-4bbc-69cf-41ecd73d582d:
     version: "1.4"
+  6733b8f0-18a1-40fd-4b4f-802c5ff21b1f:
+    version: 2.6.0
   6860d724-754c-4525-69f1-1f26c1afe76f:
     version: 1.14.0
   6d4ff228-6752-4eec-4353-8582b0ea2522:
