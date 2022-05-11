@@ -41,6 +41,8 @@ builds:
     version: 2.0.11
   351f423f-60e7-4289-4184-1b8650012eaa:
     version: 2.1.0-rc1
+  36409414-011e-43b7-56be-d7a475da110e:
+    version: 2.9.0
   38deba8c-b08a-431b-4175-a93653bc7821:
     version: "1.11"
   399d95b7-6e6f-42dc-5952-56c9a183d61c:
