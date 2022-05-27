@@ -60,7 +60,7 @@ groups:
           summary: "Logservice has high latency at instance `{{$labels.instance}}`"
           description: "Average process time of logs is greater than `<%= p('logservice_alerts.duration.threshold_ms') %>ms` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.duration.evaluation_time') %>"
       - alert: LogserviceDropRateTooHigh
-        expr: sum(rate(logs_sent_errors_total[10m])) by (instance, org, space, app) > <%= p('logservice_alerts.errors.threshold') %>
+        expr: sum(rate(logs_sent_errors_total{<%= p('logservice_alerts.errors.filter') %>}[10m])) by (instance, org, space, app) > <%= p('logservice_alerts.errors.threshold') %>
         for: <%= p('logservice_alerts.errors.evaluation_time') %>
         labels:
           service: logservice
