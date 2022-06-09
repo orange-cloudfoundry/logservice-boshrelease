@@ -21,6 +21,9 @@ properties:
     description: "Average forward duration too high evaluation time"
     default: 5m
 
+  logservice_alerts.errors.filter:
+    description: "Filter to apply on the metrics for the alarm (i.e.: app=\"reference\")"
+    default: ''
   logservice_alerts.errors.threshold:
     description: "Forward drop rate too high threshold"
     default: 0

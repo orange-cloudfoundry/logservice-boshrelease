@@ -60,14 +60,14 @@ groups:
           summary: "Logservice has high latency at instance `{{$labels.instance}}`"
           description: "Average process time of logs is greater than `<%= p('logservice_alerts.duration.threshold_ms') %>ms` at instance `{{$labels.instance}}` during the last <%= p('logservice_alerts.duration.evaluation_time') %>"
       - alert: LogserviceDropRateTooHigh
-        expr: sum(rate(logs_sent_errors_total[10m])) by (instance, org, space, app) > <%= p('logservice_alerts.errors.threshold') %>
+        expr: sum(rate(logs_sent_errors_total{<%= p('logservice_alerts.errors.filter') %>}[10m])) by (instance, org, space, app) > <%= p('logservice_alerts.errors.threshold') %>
         for: <%= p('logservice_alerts.errors.evaluation_time') %>
         labels:
           service: logservice
           severity: critical
         annotations:
           summary: "Logservice is dropping some logs at instance `{{$labels.instance}}` for app at `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}`"
-          description: "Logservice is droping more than `<%= p('logservice_alerts.errors.threshold') %>` logs/s at instance `{{$labels.instance}}` for app at `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
+          description: "Logservice is dropping more than `<%= p('logservice_alerts.errors.threshold') %>` logs/s at instance `{{$labels.instance}}` for app at `{{$labels.org}}/{{$labels.space}}/{{$labels.app}}` during the last <%= p('logservice_alerts.errors.evaluation_time') %>"
       - alert: LogserviceNoLogs
         expr: (sum(increase(logs_sent_total[<%= p('logservice_alerts.nologs.span_time') %>])) or vector(0)) == 0
         for: <%= p('logservice_alerts.nologs.evaluation_time') %>
