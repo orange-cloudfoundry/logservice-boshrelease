@@ -173,6 +173,8 @@ builds:
     version: 2.6.1
   ca95e58f-8d0a-4143-46a7-8724e34a45ef:
     version: 1.13.6
+  cd668903-a4df-462f-7394-05f8cfeef2be:
+    version: 2.25.1
   cdfd6080-3c59-4753-6fcb-a42000120a34:
     version: 1.14.5
   ceb348fa-46cf-4b72-5dc4-dfc62274d315:
