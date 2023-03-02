@@ -15,6 +15,8 @@ builds:
     version: 1.15.12
   14408bb4-cf18-4d1c-7142-381fcf6bc640:
     version: "1.6"
+  18171dd2-c98f-49f7-7102-d9a6d91a6ac7:
+    version: 2.26.0
   1a36bbb9-a40f-4961-40b5-ba45ef4dcfa9:
     version: 2.2.0
   1a6e228e-4855-4fb8-50e2-f701003fa097:
