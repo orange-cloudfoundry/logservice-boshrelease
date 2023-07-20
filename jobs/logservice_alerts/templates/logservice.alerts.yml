@@ -46,10 +46,9 @@ groups:
             Resolution:
             - contact administrator to scale up the component
 
-
       - alert: LogserviceDurationTooHigh
         expr: |
-          avg(
+          quantile(0.5,
             (job:logs_sent_duration_sum:increase10m / job:logs_sent_duration_count:increase10m) > 0
           ) by (instance) * 1000 > <%= p('logservice_alerts.duration.threshold_ms') %>
         for: <%= p('logservice_alerts.duration.evaluation_time') %>
