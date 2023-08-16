@@ -201,6 +201,8 @@ builds:
     version: 1.15.2
   ba201f14-f225-4ff0-69fa-0b6404615c2b:
     version: 1.13.14
+  babf26f9-cdc6-4985-53ac-acc57640f88c:
+    version: 2.35.0
   bb501ecc-1ae4-4fba-49ab-ecae0e17f1c9:
     version: 1.14.10
   bc8b577a-7928-4ad2-4821-d54acbafdb63:
