@@ -353,6 +353,8 @@ builds:
     version: 1.14.2
   fd5d20ef-1b4f-4b2d-6123-c55f57df9699:
     version: 2.36.0
+  ff0b4c49-827d-451e-4807-212f913b4506:
+    version: 2.61.0
   ff7c6c5c-69b5-4158-7245-a9311156c35c:
     version: "1.10"
 format-version: "2"
